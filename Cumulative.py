@@ -36,9 +36,22 @@ def calculate_row(r):
     RK1 = r[59].value
     RK2 = r[60].value
 
+    minsPlayed = float(minutes) *  float(games)
+    startsAndPlayedOnly = float(games) + float(starts)*2.4
     minPoints = (48/5)*(float(minutes)/48.0) * float(games)
 
-    points = minPoints + MVP*360 + ROY*60 + DPOY*360 + MIP * 360 + SM * 360 + NBA3*24 + NBA2*24 + NBA1*24 + Def1*36 + Def2*36 + RK1*6 + RK2*6
+    points = minsPlayed * 2.4 + MVP*450 + ROY*60 + DPOY*450 + MIP * 450 + SM * 210 + NBA3*90 + NBA2*90 + NBA1*90 + Def1*90 + Def2*90 + RK1*12 + RK2*12
+    # number of players on a roster: 15
+    # active players for a game (GP) 12/15 --> 1
+    # starting a game (GS) 5/12 --> 2.4
+    # playing a minute (MP) 10 players on court / 24 --> 2.4
+    # MVP 1 player / 30 teams * 15 players each --> 450
+    # ROY 1 player / 60 rookies --> 60
+    # DPOY 1 player / 450 players --> 450
+    # MIP --> 450
+    # 6th Man (SM) --> 1 player / 30 teams * 7 non-starters --> 210
+    # NBA 3rd/2nd/1st / All defense team --> 450 points / 5 players on the team --> 90
+    # NBA All rookie 2nd/1st --> 60 points / 5 players on the team --> 12 points
     # points = minPoints + 3 * float(starts) + NBA3 * 24 + NBA2 * 24 + NBA1 * 24 + Def1 * 36 + Def2 * 36 + RK1 * 6 + RK2 * 6
 
     return (name,points)
