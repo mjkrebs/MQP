@@ -17,10 +17,10 @@ def calculate_cumulative(year):
         result = calculate_row(m_sheet.row(i))
         worksheet.write(i,0,result[0])
         worksheet.write(i, 1, result[1])
+    workbook.close()
 
 def calculate_row(r):
     name = r[0].value
-    print ("Calculating Player:" + name)
     points = 0
     games = r[4].value
     starts = r[5].value
@@ -42,7 +42,7 @@ def calculate_row(r):
     startsAndPlayedOnly = float(games) + float(starts)*2.4
     minPoints = (48/5)*(float(minutes)/48.0) * float(games)
 
-    points = minsPlayed * 2.4 + MVP*450 + ROY*60 + DPOY*450 + MIP * 450 + SM * 210 + NBA3*90 + NBA2*90 + NBA1*90 + Def1*90 + Def2*90 + RK1*12 + RK2*12
+    points = minsPlayed * 0.24 + MVP*450 + ROY*60 + DPOY*450 + MIP * 450 + SM * 210 + NBA3*90 + NBA2*90 + NBA1*90 + Def1*90 + Def2*90 + RK1*12 + RK2*12
     # number of players on a roster: 15
     # active players for a game (GP) 12/15 --> 1
     # starting a game (GS) 5/12 --> 2.4
@@ -58,4 +58,6 @@ def calculate_row(r):
 
     return (name,points)
 
-calculate_cumulative("2016")
+
+for x in range(1990,2019):
+    calculate_cumulative(str(x))
