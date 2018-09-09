@@ -13,12 +13,14 @@ def calculate_cumulative(year):
     worksheet.write(0,0,"Player")
     worksheet.write(0,1,"Points")
     for i in range(1,m_sheet.nrows):
+
         result = calculate_row(m_sheet.row(i))
         worksheet.write(i,0,result[0])
         worksheet.write(i, 1, result[1])
 
 def calculate_row(r):
     name = r[0].value
+    print ("Calculating Player:" + name)
     points = 0
     games = r[4].value
     starts = r[5].value
@@ -56,4 +58,4 @@ def calculate_row(r):
 
     return (name,points)
 
-calculate_cumulative("2018")
+calculate_cumulative("2016")
