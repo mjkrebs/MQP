@@ -21,4 +21,5 @@ def add_players():
                 x = x+1
     workbook.close()
 
+
 add_players()
