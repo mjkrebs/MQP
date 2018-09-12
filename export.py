@@ -1,35 +1,63 @@
 import xlrd
 import xlsxwriter
 
-def export(table,name):
+def export(table,name, y):
     workbook = xlsxwriter.Workbook(name+'.xlsx')
     worksheet = workbook.add_worksheet()
     r_index = 0
     name = ""
     duplicate = False
-    for row in table:
-        c_index = 0
-        if duplicate == True:
-            if row[0] == name:
-                continue
-            else:
-                duplicate = False
-                name = ""
-        if (len(row) > 0):
-            for col in row:
-                if col == "TOT":
-                    name = row[0]
-                    duplicate = True
-                if len(col) > 0:
-                    worksheet.write(r_index,c_index, col)
-                    c_index = c_index + 1
-        r_index = r_index + 1
+    if y == True:
+        for t in table:
+            for row in t:
+                c_index = 0
+                if duplicate == True:
+                    if row[0] == name:
+                        continue
+                    else:
+                        duplicate = False
+                        name = ""
+                if (len(row) > 0):
+                    for col in row:
+                        if col == "TOT":
+                            name = row[0]
+                            duplicate = True
+                        if col == "RK" and r_index != 0:
+                            r_index  = r_index-2
+                            break
+                        if len(col) > 0:
+                            if col == " ":
+                                col = 0
+                            print(col)
+                            worksheet.write(r_index,c_index, col)
+                            c_index = c_index + 1
+                    r_index = r_index + 1
+        else:
+            for row in table:
+                c_index = 0
+                if duplicate == True:
+                    if row[0] == name:
+                        continue
+                    else:
+                        duplicate = False
+                        name = ""
+                if (len(row) > 0):
+                    for col in row:
+                        if col == "TOT":
+                            name = row[0]
+                            duplicate = True
+                        if len(col) > 0:
+                            if col == " ":
+                                col = 0
+                            worksheet.write(r_index, c_index, col)
+                            c_index = c_index + 1
+                r_index = r_index + 1
     workbook.close()
 
 def make_master(year):
     workbook = xlsxwriter.Workbook("Resources/"+year+'/Master_' + year + '.xlsx')
     worksheet = workbook.add_worksheet()
-    PG = xlrd.open_workbook("Resources/"+year+"/PPG_"+year+".xlsx")
+    PG = xlrd.open_workbook("Resources/"+year+"/PG_"+year+".xlsx")
     PG_sheet = PG.sheet_by_index(0)
 
     Adv = xlrd.open_workbook("Resources/"+year+"/Advanced_"+year+".xlsx")
@@ -135,6 +163,6 @@ def make_master(year):
     workbook.close()
 
 def multiple_masters(start, end):
-    for i in range(start, end):
+    for i in range(start, end+1):
         make_master(str(i))
 # make_master("2018")

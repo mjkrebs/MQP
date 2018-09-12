@@ -14,6 +14,10 @@ def merge(a, b, i, val):
     while len(a) != 0 and len(b) != 0:
         result = 0
         if val == 1:
+            if a[0][i].value == " ":
+                a[0][i].value = 0
+            if b[0][i].value == " ":
+                b[0][i].value = 0
             if float(a[0][i].value) > float(b[0][i].value):
                 result = 1
         else:
@@ -47,11 +51,11 @@ def sort_by_column(table, col, val):
     return MergeSort(table, col, val)
 
 
-def calculate_percentile(year, headers, cols):
+def calculate_percentile(name, year, headers, cols):
     master = xlrd.open_workbook("Resources/" + year + "/Master_" + year + ".xlsx")
     m_sheet = master.sheet_by_index(0)
 
-    workbook = xlsxwriter.Workbook("Resources/" + year + '/Percentile_' + year + '.xlsx')
+    workbook = xlsxwriter.Workbook("Resources/" + year + '/Percentile_' + name + "_" + year + '.xlsx')
     worksheet = workbook.add_worksheet()
     for i in range(len(headers)):
         worksheet.write(0, i, headers[i])
@@ -59,11 +63,13 @@ def calculate_percentile(year, headers, cols):
     currTable = []
     finalTable = []
     for i in range(1, m_sheet.nrows):
-        currTable.append(m_sheet.row_slice(i, 0, 30))
+        currTable.append(m_sheet.row_slice(i, 0, m_sheet.ncols))
     # PPG 28, RB 22, 23 Ass, 24 Stl, 25 blk
     for player in range(1, m_sheet.nrows):
         name = currTable[player-1][0].value
         ranks = []
+        if float(currTable[player-1][4].value) < 10:
+            continue
         for i in range(len(cols)):
             tempTable = sort_by_column(currTable, cols[i], 1)
             tempRank = get_rank(tempTable, name)
@@ -71,7 +77,7 @@ def calculate_percentile(year, headers, cols):
         overall = 0
         for j in range(len(ranks)):
             overall = overall + ranks[j]
-        overall = overall/5
+        overall = overall/len(ranks)
         ranks.insert(0,name)
         ranks.insert(1,overall)
         finalTable.append(ranks)
@@ -92,9 +98,9 @@ def get_rank(table, name):
             return i
 
 
-def multiple_percentiles(start, end, headers, cols):
+def multiple_percentiles(name, start, end, headers, cols):
     for i in range(start, end):
-        calculate_percentile(str(i),headers,cols)
+        calculate_percentile(name, str(i),headers,cols)
 
 
 

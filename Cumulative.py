@@ -38,7 +38,7 @@ def calculate_row(r):
 
     minPoints = (48/5)*(float(minutes)/48.0) * float(games)
 
-    points = minPoints + MVP*360 + ROY*60 + DPOY*360 + MIP * 360 + SM * 360 + NBA3*24 + NBA2*24 + NBA1*24 + Def1*36 + Def2*36 + RK1*6 + RK2*6
+    # points = minPoints + MVP*360 + ROY*60 + DPOY*360 + MIP * 360 + SM * 360 + NBA3*24 + NBA2*24 + NBA1*24 + Def1*36 + Def2*36 + RK1*6 + RK2*6
     # points = minPoints + 3 * float(starts) + NBA3 * 24 + NBA2 * 24 + NBA1 * 24 + Def1 * 36 + Def2 * 36 + RK1 * 6 + RK2 * 6
 
     return (name,points)
