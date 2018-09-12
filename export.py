@@ -1,6 +1,49 @@
 import xlrd
 import xlsxwriter
 
+#Merge Sort
+def merge(a, b, i, type):
+    c = []
+    while len(a) != 0 and len(b) != 0:
+        result = 0
+        if type == "num":
+            if a[0][i].value == " ":
+                a[0][i].value = 0
+            if b[0][i].value == " ":
+                b[0][i].value = 0
+            if float(a[0][i].value) > float(b[0][i].value):
+                result = 1
+        else:
+            if a[0][i] < b[0][i]:
+                result = 1
+        if result == 1:
+            c.append(a[0])
+            a.remove(a[0])
+        else:
+            c.append(b[0])
+            b.remove(b[0])
+    if len(a) == 0:
+        c += b
+    else:
+        c += a
+    return c
+
+
+# Code for merge sort
+def MergeSort(x, col, val):
+    if len(x) == 0 or len(x) == 1:
+        return x
+    else:
+        middle = int(len(x)/2)
+        a = MergeSort(x[:middle], col, val)
+        b = MergeSort(x[middle:], col, val)
+        return merge(a, b, col, val)
+
+
+def sort_by_column(table, col, val):
+    return MergeSort(table, col, val)
+
+
 def export(table,name, y):
     workbook = xlsxwriter.Workbook(name+'.xlsx')
     worksheet = workbook.add_worksheet()

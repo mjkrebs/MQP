@@ -121,7 +121,6 @@ def crawl(url, name, id):
         export.export(t, name, False)
 
 
-
 def pull_player_data(start_year, end_year):
     year = start_year
     while year <= end_year:
@@ -157,16 +156,6 @@ def pull_draft(start_year, end_year):
               foldername + "Draft_" + s_year, id)
         year = year + 1
 
-def pull_salary(start_year, end_year):
-    year = start_year
-    while year <= end_year:
-        s_year = str(year)
-        foldername = "Resources/" + s_year + "/"
-        if not os.path.exists(foldername):
-            os.makedirs(foldername)
-        # crawl('http://www.espn.com/nba/salaries/_/year/' + s_year + '/page/$/seasontype/4',
-        #       foldername + "Salary_" + s_year, "creamy")
-        year = year + 1
 
 def salary_cleanup(start_year, end_year):
     f = open("Resources/nba_salaries_1990_to_2018.csv","r")
@@ -174,8 +163,26 @@ def salary_cleanup(start_year, end_year):
     for i in range(start_year, end_year+1):
         s_year = str(i)
         players = re.findall('(.+),(\d+),(' + s_year + '),(\d+),(\w+),(\w+ \w+)', all_file)
-        tempout = open("Resources/" + s_year + "/Salary_" + s_year + ".csv", "w+")
+        correct_players = []
         for player in players:
+            firstname = ""
+            lastname = ""
+            player_names = re.findall('(\w+)', player[0])
+            for names in range(len(player_names)):
+                if names == len(player_names)-1:
+                    lastname = player_names[names]
+                else:
+                    firstname = firstname + player_names[names]
+            fixed_player = []
+            for col in range(len(player)):
+                if col == 0:
+                    fixed_player.append(lastname + " " + firstname)
+                else:
+                    fixed_player.append(player[col])
+            correct_players.append(fixed_player)
+        sorted_players = export.sort_by_column(correct_players, 0,"str")
+        tempout = open("Resources/" + s_year + "/Salary_" + s_year + ".csv", "w+")
+        for player in sorted_players:
             for col in range(len(player)):
                 tempout.write(player[col])
                 if col == len(player)-1:
@@ -188,7 +195,7 @@ def salary_cleanup(start_year, end_year):
 
 
 start = time.time()
-start_year = 1990
+start_year = 2018
 end_year = 2018
 # pull_player_data(start_year, end_year)
 # In order to run the below we need to not del[0] but when running the above line we need to in line 64
@@ -199,7 +206,6 @@ end_year = 2018
 # cols = [29,48,30,44,40]
 # percentile.multiple_percentiles(name , start_year, end_year, headers, cols)
 # pull_draft(1990, 2018)
-# pull_salary(1990, 2018)
 salary_cleanup(start_year, end_year)
 end = time.time()
 print(end-start)
