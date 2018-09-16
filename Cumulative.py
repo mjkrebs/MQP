@@ -13,9 +13,11 @@ def calculate_cumulative(year):
     worksheet.write(0,0,"Player")
     worksheet.write(0,1,"Points")
     for i in range(1,m_sheet.nrows):
+
         result = calculate_row(m_sheet.row(i))
         worksheet.write(i,0,result[0])
         worksheet.write(i, 1, result[1])
+    workbook.close()
 
 def calculate_row(r):
     name = r[0].value
@@ -36,6 +38,8 @@ def calculate_row(r):
     RK1 = r[59].value
     RK2 = r[60].value
 
+    minsPlayed = float(minutes) *  float(games)
+    startsAndPlayedOnly = float(games) + float(starts)*2.4
     minPoints = (48/5)*(float(minutes)/48.0) * float(games)
 
     # points = minPoints + MVP*360 + ROY*60 + DPOY*360 + MIP * 360 + SM * 360 + NBA3*24 + NBA2*24 + NBA1*24 + Def1*36 + Def2*36 + RK1*6 + RK2*6
@@ -43,4 +47,6 @@ def calculate_row(r):
 
     return (name,points)
 
-calculate_cumulative("2018")
+
+for x in range(1990,2019):
+    calculate_cumulative(str(x))
