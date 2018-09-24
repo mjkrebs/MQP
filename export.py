@@ -1,5 +1,6 @@
 import xlrd
 import xlsxwriter
+import pandas as pd
 
 #Merge Sort
 def merge(a, b, i, type):
@@ -71,42 +72,66 @@ def export(table,name, y):
                         if len(col) > 0:
                             if col == " ":
                                 col = 0
-                            print(col)
-                            worksheet.write(r_index,c_index, col)
-                            c_index = c_index + 1
-                    r_index = r_index + 1
-        else:
-            for row in table:
-                c_index = 0
-                if duplicate == True:
-                    if row[0] == name:
-                        continue
-                    else:
-                        duplicate = False
-                        name = ""
-                if (len(row) > 0):
-                    for col in row:
-                        if col == "TOT":
-                            name = row[0]
-                            duplicate = True
-                        if len(col) > 0:
-                            if col == " ":
-                                col = 0
                             worksheet.write(r_index, c_index, col)
                             c_index = c_index + 1
-                r_index = r_index + 1
+                    r_index = r_index + 1
+    else:
+          for row in table:
+            c_index = 0
+            if duplicate == True:
+                if row[0] == name:
+                    continue
+                else:
+                    duplicate = False
+                    name = ""
+            if (len(row) > 0):
+                for col in row:
+                    if col == "TOT":
+                        name = row[0]
+                        duplicate = True
+                    if len(col) > 0:
+                        if col == " ":
+                            col = 0
+                        worksheet.write(r_index, c_index, col)
+                        c_index = c_index + 1
+            r_index = r_index + 1
     workbook.close()
 
+
 def make_master(year):
-    workbook = xlsxwriter.Workbook("Resources/"+year+'/Master_' + year + '.xlsx')
+    make_awards_file(year)
+
+    pg = pd.read_excel("Resources/"+year+"/PG_"+year+".xlsx", sheetname="Sheet1")
+    pg['Player'] = pg['Player'].map(lambda x: x.lstrip('*'))
+    Adv = pd.read_excel("Resources/"+year+"/Advanced_"+year+".xlsx")
+    Adv.__delitem__("PID")
+    Adv.__delitem__("Player")
+    Adv.__delitem__("Age")
+    Adv.__delitem__("Pos")
+    Adv.__delitem__("G")
+    Adv.__delitem__("Tm")
+
+    tot = pd.read_excel("Resources/" + year + "/Totals_" + year + ".xlsx")
+    tot.__delitem__("PID")
+    tot.__delitem__("Player")
+    tot.__delitem__("Age")
+    tot.__delitem__("Pos")
+    tot.__delitem__("G")
+    tot.__delitem__("Tm")
+
+    awards = pd.read_excel("Resources/" + year + "/Binary_Awards_" + year + ".xlsx")
+
+    result = pd.concat([pg, Adv, awards], axis=1)
+    result.to_excel("Resources/"+year+"/Master_"+year+".xlsx")
+
+
+def make_awards_file(year):
+    workbook = xlsxwriter.Workbook("Resources/" + year + '/Binary_Awards_' + year + '.xlsx')
     worksheet = workbook.add_worksheet()
-    PG = xlrd.open_workbook("Resources/"+year+"/PG_"+year+".xlsx")
+    PG = xlrd.open_workbook("Resources/" + year + "/PG_" + year + ".xlsx")
     PG_sheet = PG.sheet_by_index(0)
 
-    Adv = xlrd.open_workbook("Resources/"+year+"/Advanced_"+year+".xlsx")
-    Adv_sheet = Adv.sheet_by_index(0)
-
-    SPA = xlrd.open_workbook("Resources/"+year+"/Single_Player_Awards_"+year+".xlsx")
+    SPA = xlrd.open_workbook("Resources/" + year + "/Single_Player_Awards_" + year + ".xlsx")
     SPA_sheet = SPA.sheet_by_index(0)
 
     AllNBA = xlrd.open_workbook("Resources/ALL_NBA_Teams.xlsx")
@@ -117,54 +142,37 @@ def make_master(year):
 
     AllRK = xlrd.open_workbook("Resources/ALL_Rookie.xlsx")
     AllRK_sheet = AllRK.sheet_by_index(0)
+
     column_length = 0
-    
-    for i in range(PG_sheet.nrows):
-        for j in range(PG_sheet.ncols):
-            value = PG_sheet.cell(i,j).value
-            if value == "\xa0" or value == "":
-                worksheet.write(i, j, 0.0)
-            else:
-                worksheet.write(i, j, value)
-    column_length = PG_sheet.ncols
-    
-    for i in range(Adv_sheet.nrows):
-        for j in range(6,Adv_sheet.ncols):
-            value = Adv_sheet.cell(i, j).value
-            if value == "\xa0" or value == "":
-                worksheet.write(i, j, 0.0)
-            else:
-                worksheet.write(i,j+column_length-6, value)
-    column_length = column_length+Adv_sheet.ncols - 7
-    
     for i in range(1, SPA_sheet.nrows):
         for j in range(PG_sheet.nrows):
-            worksheet.write(0, i+column_length, SPA_sheet.cell(i, 0).value)
-            if PG_sheet.cell(j, 0).value == SPA_sheet.cell(i, 1).value:
-                worksheet.write(j, i+column_length,1)
+            worksheet.write(0, i-1, SPA_sheet.cell(i, 0).value)
+            if PG_sheet.cell(j, 1).value.replace("*","") == SPA_sheet.cell(i, 1).value:
+                worksheet.write(j, i-1, 1)
             else:
-                worksheet.write(j, i+column_length, 0)
-    column_length = column_length + SPA_sheet.nrows
-    
+                worksheet.write(j, i-1, 0)
+    column_length = column_length + SPA_sheet.nrows-1
     index = -1
     for i in range(AllNBA_sheet.nrows):
-        currYear = AllNBA_sheet.cell(i,0).value
-        if currYear[0:2] == year[0:2] and currYear[len(currYear)-2:] == year[2:]:
+        currYear = AllNBA_sheet.cell(i, 0).value
+        if currYear[0:2] == year[0:2] and currYear[len(currYear) - 2:] == year[2:]:
             # Found the year
             index = i
             break
-    for i in range(1,4):
-        worksheet.write(0, column_length+i-1, AllNBA_sheet.cell(index+i-1, 2).value + "NBA")
+    for i in range(1, 4):
+        worksheet.write(0, column_length + i - 1, AllNBA_sheet.cell(index + i - 1, 2).value + "NBA")
         players = []
         for j in range(3, AllNBA_sheet.ncols):
-            players.append(AllNBA_sheet.cell(i, j).value[:-2])
-        for x in range(1,PG_sheet.nrows):
-                if PG_sheet.cell(x, 0).value in players:
-                    worksheet.write(x, column_length+i - 1, 1)
-                else:
-                    worksheet.write(x, column_length + i - 1, 0)
+            players.append(AllNBA_sheet.cell(i-1 + index, j).value[:-2])
+        for x in range(1, PG_sheet.nrows):
+            name = PG_sheet.cell(x,1).value
+            if PG_sheet.cell(x, 1).value.replace("*","") in players:
+                worksheet.write(x, column_length + i - 1, 1)
+            else:
+                worksheet.write(x, column_length + i - 1, 0)
     column_length = column_length + 3
-    
+
+
     index = -1
     for i in range(AllDef_sheet.nrows):
         currYear = AllDef_sheet.cell(i, 0).value
@@ -176,9 +184,9 @@ def make_master(year):
         worksheet.write(0, column_length + i - 1, AllDef_sheet.cell(index + i - 1, 2).value + "DEF")
         players = []
         for j in range(3, AllDef_sheet.ncols):
-            players.append(AllDef_sheet.cell(i, j).value)
+            players.append(AllDef_sheet.cell(i-1 + index, j).value)
         for x in range(1, PG_sheet.nrows):
-            if PG_sheet.cell(x, 0).value in players:
+            if PG_sheet.cell(x, 1).value.replace("*","") in players:
                 worksheet.write(x, column_length + i - 1, 1)
             else:
                 worksheet.write(x, column_length + i - 1, 0)
@@ -195,17 +203,14 @@ def make_master(year):
         worksheet.write(0, column_length + i - 1, AllRK_sheet.cell(index + i - 1, 2).value + "RK")
         players = []
         for j in range(3, AllRK_sheet.ncols):
-            players.append(AllRK_sheet.cell(i, j).value)
+            players.append(AllRK_sheet.cell(i-1 + index, j).value)
         for x in range(1, PG_sheet.nrows):
-            if PG_sheet.cell(x, 0).value in players:
+            if PG_sheet.cell(x, 1).value.replace("*","") in players:
                 worksheet.write(x, column_length + i - 1, 1)
             else:
                 worksheet.write(x, column_length + i - 1, 0)
-    column_length = column_length + 2
 
-    workbook.close()
 
 def multiple_masters(start, end):
     for i in range(start, end+1):
         make_master(str(i))
-# make_master("2018")
