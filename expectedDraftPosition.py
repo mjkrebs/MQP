@@ -13,9 +13,19 @@ def getPlayerMetricCareer(name,metric):
 	return value
 
 #go through all percentile files, if found, add the value to a cumulative and increment a count. 
-#return a pair [cumulative percentile, numSeasons]. currently returns a random number for testing.
+#return a pair [cumulative percentile, numSeasons]. TO
 def getPercentileMetricCareer(name):
-	return randint(1,101)
+	cumulative = 0
+	numSeasons = 0
+	for year in range(1990,2018):
+		master = xlrd.open_workbook("Resources/" + str(year) + "/Percentile_" + str(year) + ".xlsx")
+		m_sheet = master.sheet_by_index(0)
+		for i in range(1,m_sheet.nrows):
+			if(name == m_sheet.cell(i,0).value):
+				cumulative = cumulative + m_sheet.cell(i,1).value
+				numSeasons = numSeasons + 1
+				break
+	return cumulative, numSeasons
 
 #creates a set of all players.
 def addPlayers():
@@ -53,33 +63,72 @@ def getPlayerDraftPosn(playerName):
 				return int(draftPos)
 	return 61
 
+#given a draft position and name of a metric, will go into that workbook and return the average value.
+def getAverageFromCol(draftPosition, metric):
+	master = xlrd.open_workbook("Resources/PlayersByDraftPosition.xlsx")
+	worksheet = master.sheet_by_name("Pick " + str(draftPosition))
+	numRows = worksheet.nrows
+	numCols = worksheet.ncols
+	colNum = -1
+	result = 0
+	divisor = 0
+	for i in range(0,numCols):
+		if(worksheet.cell(0,i).value == "metric=" + metric):
+			colNum = i
+	if(colNum == -1):
+		return -1
+	for n in range(1,numRows):
+		result = result + worksheet.cell(n,colNum).value
+		divisor = divisor + 1
+	return result / divisor
+
+#creates the master workbook, adds the percentile metric 
+#(this takes an extremely long time to run currently, needs optimization)
+def createWorkbookAndAddPercentile(playerSet):
+	playersByDraftPosition = createWorkbook()
+	#currentRow tracks the correct row to insert the next player for each pick. just an array of ones initially.
+	currentRow = np.ones(61, dtype=int)
+
+	for playerName in playerSet:
+		#add lines to get metric values here
+
+		cumulativePercentileValue,numSeasons = getPlayerMetricCareer(playerName, "percentile")
+		if(numSeasons == 0):
+			print("NO SEASONS FOUND FOR PERCENTILE STAT: " + playerName)
+			numSeasons = 1
+		percentileValue = cumulativePercentileValue / numSeasons
+		print(playerName + " %val: " + str(percentileValue))
 
 
 
-#start code
+		draftPos = getPlayerDraftPosn(playerName)
+		#easy lookup in same order as playerSet.
+		playerDraftPosnSet.add(draftPos)
 
-#this isn't necessary in the end, but for testing just add a switch.
-metric = input("enter metric: options = percentile")
+		
+		#open the excel file to the right worksheet
+		worksheet = playersByDraftPosition.get_worksheet_by_name("Pick " + str(draftPos))
+		
+		#add name
+		worksheet.write(currentRow[draftPos-1],0,playerName)
+
+		#add metrics to the same row
+		worksheet.write(currentRow[draftPos-1],1, percentileValue)
+
+		
+		#increment the count. zero-indexed array so the first pick is the zero'th array, etc. 
+		currentRow[draftPos-1] = currentRow[draftPos-1] + 1
+
+	playersByDraftPosition.close()
+
+
+#start main code
 
 playerSet = addPlayers()
-playersByDraftPosition = createWorkbook()
-#currentRow tracks the correct row to insert the next player for each pick. just an array of ones initially.
-currentRow = np.ones(61, dtype=int)
-
-for playerName in playerSet:
-	percentileValue = getPlayerMetricCareer(playerName, metric)
-	draftPos = getPlayerDraftPosn(playerName)
-	#testing print statement
-	print("Name: " + playerName + " draftPos: " + str(draftPos) + " percentileValue: " + str(percentileValue))
-	#open the excel file to the right worksheet
-	worksheet = playersByDraftPosition.get_worksheet_by_name("Pick " + str(draftPos))
-	#add name and metric. need to find a way to better abstract this, perhaps create an array of all metrics
-	#then write an addRow function.
-	worksheet.write(currentRow[draftPos-1],0,playerName)
-	worksheet.write(currentRow[draftPos-1],1, percentileValue)
-	#increment the count. zero-indexed array so the first pick is the zero'th array, etc. 
-	currentRow[draftPos-1] = currentRow[draftPos-1] + 1
-playersByDraftPosition.close()
-
+playerDraftPosnSet = set()
+playerNameAndDraftPosnDict = dict(zip(playerSet,playerDraftPosnSet))
+createWorkbookAndAddPercentile(playerSet)
+for i in range(1,62):
+	print(getAverageFromCol(i,"percentile"))
 
 
