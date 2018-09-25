@@ -14,9 +14,9 @@ def merge(a, b, i, val):
     while len(a) != 0 and len(b) != 0:
         result = 0
         if val == 1:
-            if a[0][i].value == " ":
+            if a[0][i].value == " " or a[0][i].value == "" :
                 a[0][i].value = 0
-            if b[0][i].value == " ":
+            if b[0][i].value == " " or b[0][i].value == "" :
                 b[0][i].value = 0
             if float(a[0][i].value) > float(b[0][i].value):
                 result = 1

@@ -12,7 +12,8 @@ def getPlayerMetricCareer(name,metric):
 		print("This is not a valid metric.")
 	return value
 
-#go through all percentile files, if found, add the value to a cumulative and increment a count. 
+
+#go through all percentile files, if found, add the value to a cumulative and increment a count.
 #return a pair [cumulative percentile, numSeasons]. TO
 def getPercentileMetricCareer(name):
 	cumulative = 0

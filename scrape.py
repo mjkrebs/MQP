@@ -226,16 +226,16 @@ def add_PID_master(start_year, end_year):
 
 
 start = time.time()
-start_year = 1990
-end_year = 2018
+start_year = 2018
+end_year = 2019
 # pull_player_data(start_year, end_year)
 # In order to run the below we need to not del[0] but when running the above line we need to in line 64
 # pull_season_solo_awards(start_year, end_year, 'all_awards')
-export.multiple_masters(start_year, end_year)
-# name = "Advanced"
-# headers = ["Name", "Overall", "PER", "VORP", "TS%", "WS/48", "USG%"]
-# cols = [29,48,30,44,40]
-# percentile.multiple_percentiles(name , start_year, end_year, headers, cols)
+# export.multiple_masters(start_year, end_year)
+name = "Advanced"
+headers = ["Name", "Overall", "PER", "VORP", "TS%", "WS/48", "USG%"]
+cols = [29,48,30,44,40]
+percentile.multiple_percentiles(name , start_year, end_year, headers, cols)
 # pull_draft(1990, 2018)
 # salary_cleanup(start_year, end_year)
 # add_PID_master(start_year, end_year)
