@@ -20,6 +20,8 @@ def getPlayerCumulativeMetricCareer(name,metric, year):
 def getPercentileMetricCareer(name, rookieYear):
 	cumulative = 0
 	numSeasons = 0
+	if(rookieYear == 1989):
+		rookieYear+=1
 	for year in range(rookieYear,2018):
 		master = xlrd.open_workbook("Resources/" + str(year) + "/Percentile_" + str(year) + ".xlsx")
 		m_sheet = master.sheet_by_index(0)
@@ -44,7 +46,7 @@ def addPlayers():
 				x = x+1
 	return players
 
-#look up name in draft workbook. 61 == undrafted (rookie year == 1990)
+#look up name in draft workbook. 61 == undrafted (rookie year == 1989)
 def getPlayerDraftPosn(playerName):
 	for year in range(1990,2019):
 		master = xlrd.open_workbook("Resources/" + str(year) + "/Draft_" + str(year) + ".xlsx")
@@ -54,7 +56,7 @@ def getPlayerDraftPosn(playerName):
 			if(result == playerName):
 				draftPos = m_sheet.cell(i,0).value
 				return int(draftPos), year
-	return 61, 1990
+	return 61, 1989
 
 #given a draft position and name of a metric, will go into that workbook and return the average value.
 def getAverageMetric(df, draftPosition, metric):
