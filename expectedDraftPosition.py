@@ -5,19 +5,19 @@ import numpy as np
 
 #function which can get any metric based on the parameter, calls the appropriate function.
 #currently only supports percentile
-def getPlayerMetricCareer(name,metric):
+def getPlayerMetricCareer(name,metric, year):
 	if(metric == "percentile"):
-		value = getPercentileMetricCareer(name)
+		value = getPercentileMetricCareer(name, year)
 	else:
 		print("This is not a valid metric.")
 	return value
 
 #go through all percentile files, if found, add the value to a cumulative and increment a count. 
 #return a pair [cumulative percentile, numSeasons]. TO
-def getPercentileMetricCareer(name):
+def getPercentileMetricCareer(name, rookieYear):
 	cumulative = 0
 	numSeasons = 0
-	for year in range(1990,2018):
+	for year in range(rookieYear,2018):
 		master = xlrd.open_workbook("Resources/" + str(year) + "/Percentile_" + str(year) + ".xlsx")
 		m_sheet = master.sheet_by_index(0)
 		for i in range(1,m_sheet.nrows):
@@ -27,7 +27,7 @@ def getPercentileMetricCareer(name):
 				break
 	return cumulative, numSeasons
 
-#creates a set of all players.
+#creates a set of all players. cyrrently bottlenecks
 def addPlayers():
 	players = set()
 	x = 1
@@ -41,7 +41,6 @@ def addPlayers():
 				x = x+1
 	return players
 
-
 #create a workbook with 61 worksheets, one for each draft pick AND one for undrafted.
 def createWorkbook():
 	workbook = xlsxwriter.Workbook("Resources/PlayersByDraftPosition.xlsx")
@@ -51,7 +50,7 @@ def createWorkbook():
 		worksheet.write(0,1,"metric=percentile")
 	return workbook
 
-#look up name in draft workbook. 61 == undrafted.
+#look up name in draft workbook. 61 == undrafted (rookie year == 1990)
 def getPlayerDraftPosn(playerName):
 	for year in range(1990,2019):
 		master = xlrd.open_workbook("Resources/" + str(year) + "/Draft_" + str(year) + ".xlsx")
@@ -60,8 +59,8 @@ def getPlayerDraftPosn(playerName):
 			result = m_sheet.cell(i,2).value
 			if(result == playerName):
 				draftPos = m_sheet.cell(i,0).value
-				return int(draftPos)
-	return 61
+				return int(draftPos), year
+	return 61, 1990
 
 #given a draft position and name of a metric, will go into that workbook and return the average value.
 def getAverageFromCol(draftPosition, metric):
@@ -92,18 +91,14 @@ def createWorkbookAndAddPercentile(playerSet):
 	for playerName in playerSet:
 		#add lines to get metric values here
 
-		cumulativePercentileValue,numSeasons = getPlayerMetricCareer(playerName, "percentile")
-		if(numSeasons == 0):
-			print("NO SEASONS FOUND FOR PERCENTILE STAT: " + playerName)
-			numSeasons = 1
-		percentileValue = cumulativePercentileValue / numSeasons
-		print(playerName + " %val: " + str(percentileValue))
+		
 
 
 
-		draftPos = getPlayerDraftPosn(playerName)
+		draftPos, year = getPlayerDraftPosn(playerName)
 		#easy lookup in same order as playerSet.
 		playerDraftPosnSet.add(draftPos)
+		playerRookieYearSet.add(year)
 
 		
 		#open the excel file to the right worksheet
@@ -112,8 +107,20 @@ def createWorkbookAndAddPercentile(playerSet):
 		#add name
 		worksheet.write(currentRow[draftPos-1],0,playerName)
 
+		#add rookie year
+		worksheet.write(currentRow[draftPos-1],1,year)
+
+
+		#add param for rookie year
+		cumulativePercentileValue,numSeasons = getPlayerMetricCareer(playerName, "percentile", year)
+		if(numSeasons == 0):
+			print("NO SEASONS FOUND FOR PERCENTILE STAT: " + playerName)
+			numSeasons = 1
+		percentileValue = cumulativePercentileValue / numSeasons
+		print(playerName + " %val: " + str(percentileValue))
+
 		#add metrics to the same row
-		worksheet.write(currentRow[draftPos-1],1, percentileValue)
+		worksheet.write(currentRow[draftPos-1],2, percentileValue)
 
 		
 		#increment the count. zero-indexed array so the first pick is the zero'th array, etc. 
@@ -124,10 +131,22 @@ def createWorkbookAndAddPercentile(playerSet):
 
 #start main code
 
+#initial run
 playerSet = addPlayers()
 playerDraftPosnSet = set()
-playerNameAndDraftPosnDict = dict(zip(playerSet,playerDraftPosnSet))
+playerRookieYearSet = set()
 createWorkbookAndAddPercentile(playerSet)
+#save playerset, draftPosn and rookieYear to csv
+
+
+#subsequent runs
+#import sets as a df
+#playerSet = col1
+#draftPosnSet = col2
+#rookieYear = col3 
+
+playerNameAndDraftPosnDict = dict(zip(playerSet,playerDraftPosnSet))
+
 for i in range(1,62):
 	print(getAverageFromCol(i,"percentile"))
 
