@@ -257,16 +257,22 @@ def make_master_draft():
     undrafted_pids = []
     undrafted_names = []
     for i in range(len(pids)):
-        if pids[i] in drafted_pids:
+        if " " in pids[i] or pids[i] in drafted_pids:
             continue
         else:
             undrafted_pids.append(pids[i])
             undrafted_names.append(names[i])
+    master_draft_removed = master_draft.values
+
+
     master_draft.to_excel("Master_Draft.xlsx")
     undrafted_players = pd.DataFrame({"PID":undrafted_pids, "Player":undrafted_names,"Pk":61, "DraftTeam":0, "College":0, "RkYear":1990})
     print(undrafted_players)
-    master_draft = master_draft.append(undrafted_players)
-    master_draft.to_excel("Master_Players.xlsx")
+    master_players = master_draft.append(undrafted_players)
+    master_players = master_players.set_index("PID")
+    master_players = master_players.sort_index()
+    master_players.to_excel("Master_Players.xlsx")
+
     return master_draft
 
 
@@ -282,7 +288,7 @@ end_year = 2018
 # pull_draft(start_year, end_year)
 # salary_cleanup(start_year, end_year)
 # add_PID_master(start_year, end_year)
-make_master_draft()
+# make_master_draft()
 
 # add_draft_to_master()
 end = time.time()

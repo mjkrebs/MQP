@@ -12,3 +12,9 @@ def all_players():
                 all_pid.append(player[0])
                 all_names.append((player[1]))
     return all_pid,all_names
+
+def find_player(pid):
+    df = pd.read_excel("Master_Players.xlsx")
+    df = df.loc[df['PID'] == pid]
+    return df.values
+
