@@ -40,7 +40,7 @@ masterFrame = pd.read_excel("Master_Players.xlsx")
 def getPlayerMetricCareer(playerID, rookieYear,metric):
 	cumulativeValue = 0
 	numSeasons = 0
-	if(rookieYear < 1989):
+	if(rookieYear <= 1989):
 		rookieYear = 1990
 	for year in range(rookieYear,2019):
 		df = pd.read_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
@@ -81,3 +81,5 @@ for x in range (1,61):
 	value = getAverageMetricForDraftPosition(masterFrame,x,"normalized_PER")
 	normalized_PER_list.append(value)
 	print("Computed normalized_PER for draftPosition: " + str(x) + str(value))
+
+pd.DataFrame(normalized_PER_list).to_excel("Normalized_PER_by_DraftPos")
