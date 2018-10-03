@@ -33,15 +33,15 @@ def	normalizeMetric(metric):
 #normalizeMetric("PER")
 
 #this dataframe not up to date, has too many undrafted players. using for testing purposes, change later. 
-masterFrame = pd.read_csv("Master_Players.xlsx")
+masterFrame = pd.read_excel("Master_Players.xlsx")
 
 
 #given a playerID and rookie year, return a pair of values: one the cumulative value of the metric over the career, the other the number of seasons played.
 def getPlayerMetricCareer(playerID, rookieYear,metric):
 	cumulativeValue = 0
 	numSeasons = 0
-	if(rookieYear == 1989):
-		rookieYear+=1
+	if(rookieYear < 1989):
+		rookieYear = 1990
 	for year in range(rookieYear,2019):
 		df = pd.read_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
 		df = df.loc[df['PID'] == playerID]
@@ -58,16 +58,16 @@ def getPlayerMetricCareer(playerID, rookieYear,metric):
 #An alternative would be to calculate the mean value for each player first, then take the average of averages.
 
 def getAverageMetricForDraftPosition(df, draftPosition, metric):
-	df = df.loc[df['draftPosition'] == draftPosition]
+	df = df.loc[df['Pk'] == draftPosition]
 	OGsum = 0
 	numPlayers = 0
 	totalSeasonsForPick = 0
 	for row in df.itertuples(index=True, name='Pandas'):
 
 		numPlayers += 1
-		playerID = getattr(row,'playerID')
+		playerID = getattr(row,'PID')
 		print(playerID)
-		rookieYear = getattr(row, 'rookieYear')
+		rookieYear = getattr(row, 'RkYear')
 		playerValue, playerSeasons = getPlayerMetricCareer(playerID, rookieYear,metric)
 		OGsum += playerValue
 		totalSeasonsForPick += playerSeasons
