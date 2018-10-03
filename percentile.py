@@ -4,7 +4,7 @@
 # PPG, Assists, Blocks, Rebounds, Steals
 
 import xlrd
-
+import pandas as pd
 import xlsxwriter
 
 
@@ -51,61 +51,39 @@ def sort_by_column(table, col, val):
     return MergeSort(table, col, val)
 
 
-def calculate_percentile(name, year, headers, cols):
-    master = xlrd.open_workbook("Resources/" + year + "/Master_" + year + ".xlsx")
-    m_sheet = master.sheet_by_index(0)
+def calculate_percentile(year, headers):
+    master = pd.read_excel("Resources/" + year + "/Master_" + year + ".xlsx")
+    output_df = pd.DataFrame()
+    headers_rank = []
+    first = 1
+    for col_header in headers:
+        sorted_df = master.get(["PID", "Player", col_header]).sort_values(col_header, ascending = False)
+        sorted_df.set_index(["PID","Player"])
+        sorted_df.reset_index(inplace=True)
+        sorted_df[col_header+"_rank"] = sorted_df.index
+        headers_rank.append(col_header+"_rank")
+        if first == 1:
+            output_df = sorted_df
+            first = 2
+        else:
+            output_df = output_df.merge(sorted_df, on=["PID", "Player"])
 
-    workbook = xlsxwriter.Workbook("Resources/" + year + '/Percentile_' + name + "_" + year + '.xlsx')
-    worksheet = workbook.add_worksheet()
-    for i in range(len(headers)):
-        worksheet.write(0, i, headers[i])
-
-    currTable = []
-    finalTable = []
-    for i in range(1, m_sheet.nrows):
-        currTable.append(m_sheet.row_slice(i, 0, m_sheet.ncols))
-    # PPG 28, RB 22, 23 Ass, 24 Stl, 25 blk
-    for player in range(1, m_sheet.nrows):
-        name = currTable[player-1][0].value
-        ranks = []
-        if float(currTable[player-1][4].value) < 10:
-            continue
-        for i in range(len(cols)):
-            tempTable = sort_by_column(currTable, cols[i], 1)
-            tempRank = get_rank(tempTable, name)
-            ranks.append(tempRank)
-        overall = 0
-        for j in range(len(ranks)):
-            overall = overall + ranks[j]
-        overall = overall/len(ranks)
-        ranks.insert(0,name)
-        ranks.insert(1,overall)
-        finalTable.append(ranks)
-    finalTable = sort_by_column(finalTable, 1, -1)
-    for i in range(1, len(finalTable)):
-        worksheet.write(i, 0, finalTable[i-1][0])
-        worksheet.write(i, 1, finalTable[i-1][1])
-        worksheet.write(i, 2, finalTable[i-1][2])
-        worksheet.write(i, 3, finalTable[i-1][3])
-        worksheet.write(i, 4, finalTable[i-1][4])
-        worksheet.write(i, 5, finalTable[i-1][5])
-        worksheet.write(i, 6, finalTable[i-1][6])
+    output_df["Overall_Rank"] = (output_df[headers_rank].sum(axis=1).divide(len(headers)))
+    output_df = output_df.sort_values("Overall_Rank", ascending = True)
+    output_df.reset_index(inplace=True)
+    output_df.__delitem__("index_x")
+    output_df.__delitem__("index_y")
+    output_df.__delitem__("index")
+    output_df.__delitem__("level_0")
+    output_df.to_excel("Resources/" + year + "/Percentile_" + year + ".xlsx")
 
 
-def get_rank(table, name):
-    for i in range(len(table)):
-        if table[i][0].value == name:
-            return i
-
-
-def multiple_percentiles(name, start, end, headers, cols):
+def multiple_percentiles(start, end, headers):
     for i in range(start, end):
-        calculate_percentile(name, str(i),headers,cols)
-
-
+        calculate_percentile(str(i),headers)
 
 # year = "2018"
-# headers = ["Name", "Overall", "Points", "Assists", "Rebounds", "Steals", "Blocks"]
+# headers = ["PS/G", "AST", "TRB", "STL", "BLK"]
 # cols = [28, 23, 22, 24, 25]
-# calculate_percentile(year, headers, cols)
+# easy(year, headers, cols)
 

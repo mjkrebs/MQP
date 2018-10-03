@@ -52,14 +52,14 @@ class HTMLTableParser:
         # we also find the column titles if we can
 
         c_names = []
-        '''
         # This needs to be in there for draft sheets
         index = 0
+
         for col in table.find_all('th'):
             if index > 9 and index < 31:
                 c_names.append(col.get_text())
             index = index + 1
-        '''
+        c_names.insert(2,"PID")
 
         for row in table.find_all('tr'):
 
@@ -74,24 +74,25 @@ class HTMLTableParser:
             # Handle column names if we find them
             th_tags = row.find_all('th')
             # TODO Make the below line not necessary for doing the PG, Adv, and Total
-            del th_tags[0]
+            # del th_tags[0]
             if len(th_tags) > 0 and len(column_names) == 0:
                 for th in th_tags:
                     column_names.append(th.get_text())
 
 
+        # print(len(column_names))
+        # print(n_columns)
         # Safeguard on Column Titles
-        if len(column_names) > 0 and len(column_names) != n_columns:
-            raise Exception("Column titles do not match the number of columns")
+        # if len(column_names) > 0 and len(column_names) != n_columns:
+        #     raise Exception("Column titles do not match the number of columns")
 
         columns = column_names if len(column_names) > 0 else range(0, n_columns)
         row_marker = 0
         data = []
-        c_names.append("PID")
-        for c in column_names:
-            # TODO This is necessary to uncomment out when you are doing the player stats data pull
-            if c!='\xa0' and len(c)>0:
-                c_names.append(c)
+        # for c in column_names:
+        #     # TODO This is necessary to uncomment out when you are doing the player stats data pull
+        #     if c!='\xa0' and len(c)>0:
+        #         c_names.append(c)
         data.append(c_names)
         for row in table.find_all('tr'):
             column_marker = 0
@@ -104,8 +105,8 @@ class HTMLTableParser:
                     r.append(pid[0])
                 if column.get_text() != '':
                     r.append(column.get_text())
-                # else:
-                #     r.append('0.0')
+                else:
+                    r.append('0.0')
             if(len(r)>0):
                 data.append(r)
             if len(columns) > 0:
@@ -225,20 +226,49 @@ def add_PID_master(start_year, end_year):
         year = year + 1
 
 
+def make_master_player():
+    master_draft = pd.read_excel("Master_Draft.xlsx")
+    master_draft.set_index(['PID'])
+
+    for year in range(1990, 1991):
+        #TODO
+        # What we need to do here is add all of the players who are in the master list and also not in the master draft and add them in
+        print("")
+
+
+# Note that players from early drafts who don't have stats at all in basketball reference do not have a PID, so we should ignore them.
+def make_master_draft():
+    master_draft = pd.DataFrame
+    first = 1
+    for year in range(1976, 2019):
+        draft = pd.read_excel("Resources/" + str(year) + "/Draft_" + str(year) + ".xlsx")
+        draft = draft[["PID", "Player", "Pk","Tm","College"]]
+        draft["RkYear"] = year
+        draft.columns = ['PID', "Player", "Pk", "DraftTeam", "College", "RkYear"]
+        if first == 1:
+            master_draft = draft
+            first = 2
+        else:
+            master_draft = pd.concat([draft,master_draft])
+    master_draft.to_excel("Master_Draft.xlsx")
+    return master_draft
+
+
 start = time.time()
-start_year = 2018
-end_year = 2019
+start_year = 1990
+end_year = 2018
 # pull_player_data(start_year, end_year)
 # In order to run the below we need to not del[0] but when running the above line we need to in line 64
 # pull_season_solo_awards(start_year, end_year, 'all_awards')
 # export.multiple_masters(start_year, end_year)
-name = "Advanced"
-headers = ["Name", "Overall", "PER", "VORP", "TS%", "WS/48", "USG%"]
-cols = [29,48,30,44,40]
-percentile.multiple_percentiles(name , start_year, end_year, headers, cols)
-# pull_draft(1990, 2018)
+# headers = ["PS/G", "TRB", "AST", "STL", "BLK"]
+# percentile.multiple_percentiles(start_year, end_year, headers)
+# pull_draft(start_year, end_year)
 # salary_cleanup(start_year, end_year)
 # add_PID_master(start_year, end_year)
+make_master_draft()
+
+# add_draft_to_master()
 end = time.time()
 print(end-start)
 
