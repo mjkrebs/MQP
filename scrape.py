@@ -10,6 +10,8 @@ import time
 import pandas as pd
 from bs4 import BeautifulSoup
 from bs4 import Comment
+
+import createPlayerFile
 import export
 import os
 import csv
@@ -249,8 +251,22 @@ def make_master_draft():
             master_draft = draft
             first = 2
         else:
-            master_draft = pd.concat([draft,master_draft])
+            master_draft = pd.concat([draft, master_draft])
+    pids, names = createPlayerFile.all_players()
+    drafted_pids = master_draft["PID"].values
+    undrafted_pids = []
+    undrafted_names = []
+    for i in range(len(pids)):
+        if pids[i] in drafted_pids:
+            continue
+        else:
+            undrafted_pids.append(pids[i])
+            undrafted_names.append(names[i])
     master_draft.to_excel("Master_Draft.xlsx")
+    undrafted_players = pd.DataFrame({"PID":undrafted_pids, "Player":undrafted_names,"Pk":61, "DraftTeam":0, "College":0, "RkYear":1990})
+    print(undrafted_players)
+    master_draft = master_draft.append(undrafted_players)
+    master_draft.to_excel("Master_Players.xlsx")
     return master_draft
 
 
