@@ -84,6 +84,22 @@ def getAverageMetricForDraftPosition(df, draftPosition, metric):
 
 	return OGsum / totalSeasonsForPick, numPlayersAtPick
 
+def getCumulativeMetricForDraftPosition(df, draftPosition, metric):
+	df = df.loc[df['Pk'] == draftPosition]
+	numPlayersAtPick = 0
+	OGsum = 0
+	for row in df.itertuples(index=True, name='Pandas'):
+		numPlayersAtPick += 1
+		playerID = getattr(row,'PID')
+		print(playerID)
+		rookieYear = getattr(row, 'RkYear')
+		playerValue, playerSeasons = getPlayerMetricCareer(playerID, rookieYear,metric)
+		OGsum += playerValue
+
+
+	return OGsum, numPlayersAtPick
+
+
 
 
 master_season_dfs = list()
@@ -97,15 +113,32 @@ normalizeMetric("VORP")
 """
 masterFrame = pd.read_excel("Master_Players.xlsx")
 
+draftPositions = list()
+for x in range(1,61):
+	draftPositions.append(x)
+
+
+
+# START NORMALIZED PER, WS AND VORP
+
 normalized_PER_list = list()
 normalized_WS_list = list()
 normalized_VORP_list = list()
 numPlayersAtPick_list = list()
-
+"""
 for x in range (1,61):
+	
 	PER_value, numPlayersAtPick = getAverageMetricForDraftPosition(masterFrame,x,"normalized_PER")
 	VORP_value, numPlayersAtPick = getAverageMetricForDraftPosition(masterFrame,x,"normalized_VORP")
 	WS_value, numPlayersAtPick = getAverageMetricForDraftPosition(masterFrame,x,"normalized_WS")
+	"""
+
+#START CUMULATIVE CODE
+
+"""
+	PER_value, numPlayersAtPick = getCumulativeMetricForDraftPosition(masterFrame,x,"normalized_PER")
+	VORP_value, numPlayersAtPick = getCumulativeMetricForDraftPosition(masterFrame,x,"normalized_VORP")
+	WS_value, numPlayersAtPick = getCumulativeMetricForDraftPosition(masterFrame,x,"normalized_WS")
 
 	normalized_PER_list.append(PER_value)
 	normalized_WS_list.append(WS_value)
@@ -116,16 +149,35 @@ for x in range (1,61):
 	print("Computed normalized_WS for draftPosition " + str(x) + ": " + str(WS_value))
 	print("Computed normalized_VORP for draftPosition " + str(x) + ": " + str(VORP_value))
 
-draftPositions = list()
-for x in range(1,61):
-	draftPositions.append(x)
+
 
 stats = [('Draft Position', draftPositions),
 		('Number of players computed for', numPlayersAtPick_list),
-		('Normalized PER', normalized_PER_list), 
-		('Normalized WS', normalized_WS_list),
-		 ('Normalized VORP', normalized_VORP_list)]
+		('Cumulative Normalized PER', normalized_PER_list), 
+		('Cumulative Normalized WS', normalized_WS_list),
+		 ('Cumulative Normalized VORP', normalized_VORP_list)]
 stats_df = pd.DataFrame.from_items(stats)
-writer = pd.ExcelWriter('Normalized_Stats_by_DraftPos.xlsx')
+writer = pd.ExcelWriter('Cumulative_Normalized_Stats_by_DraftPos.xlsx')
+stats_df.to_excel(writer, 'Sheet1')
+writer.save()
+
+"""
+playerID_list = list()
+metric1_list = list()
+metric2_list = list()
+for row in masterFrame.itertuples(index = True, name='Pandas'):
+	playerID = getattr(row, 'PID')
+	print(playerID)
+	metric1Value, s = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "WS")
+	metric2Value, s = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "PER")
+	playerID_list.append(playerID)
+	metric1_list.append(metric1Value)
+	metric2_list.append(metric2Value)
+
+stats = [('Player ID', playerID_list),
+		 ('WS', metric1_list),
+		 ('PER', metric2_list)]
+stats_df = pd.DataFrame.from_items(stats)
+writer = pd.ExcelWriter('ScatterPlot.xlsx')
 stats_df.to_excel(writer, 'Sheet1')
 writer.save()
