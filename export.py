@@ -334,7 +334,7 @@ def make_master_draft():
 
 
 def percentile_to_master():
-    for year in range(1990,2019):
+    for year in range(1990, 2019):
         pdf = pd.read_excel("Resources/" + str(year) + "/Basic_Percentile_" + str(year) + ".xlsx").get(["PID","Overall_Rank"])
         adf = pd.read_excel("Resources/" + str(year) + "/Advanced_Percentile_" + str(year) + ".xlsx").get(["PID","Overall_Rank"])
         master = pd.read_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
@@ -370,6 +370,6 @@ def salary_master():
         master.insert(5,"Salary", sal)
         master.to_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
 
-# percentile_to_master()
-# make_master(2018)
-# salary_master()
+multiple_masters(1990, 2018)
+percentile_to_master()
+salary_master()

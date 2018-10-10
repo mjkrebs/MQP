@@ -184,8 +184,11 @@ for row in masterFrame.itertuples(index = True, name='Pandas'):
 
 stats = [('Player ID', playerID_list),
 		 ('WS', metric1_list),
-		 ('PER', metric2_list)]
+		 ('PER', metric2_list)
+		 ('VORP', metric3_list),
+		 ('BPercentile', metric4_list),
+		 ('APercentile', metric5_list)]
 stats_df = pd.DataFrame.from_items(stats)
-writer = pd.ExcelWriter('ScatterPlot.xlsx')
+writer = pd.ExcelWriter('ScatterPlot1.xlsx')
 stats_df.to_excel(writer, 'Sheet1')
 writer.save()
