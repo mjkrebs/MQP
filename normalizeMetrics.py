@@ -166,14 +166,21 @@ writer.save()
 playerID_list = list()
 metric1_list = list()
 metric2_list = list()
+metric3_list = list()
+metric4_list = list()
+metric5_list = list()
 for row in masterFrame.itertuples(index = True, name='Pandas'):
 	playerID = getattr(row, 'PID')
 	print(playerID)
 	metric1Value, s = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "WS")
 	metric2Value, s = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "PER")
+	metric3Value, s = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "VORP")
+	metric4Value, s = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "BPercentile")
+	metric5Value, s = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "APercentile")
 	playerID_list.append(playerID)
 	metric1_list.append(metric1Value)
 	metric2_list.append(metric2Value)
+	metric3_list.append(metric3Value)
 
 stats = [('Player ID', playerID_list),
 		 ('WS', metric1_list),

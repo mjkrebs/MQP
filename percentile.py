@@ -58,7 +58,7 @@ def calculate_percentile(year, headers, name):
     first = 1
     for col_header in headers:
         # Here is where I am applying a cutoff of 10 minutes minimum played
-        sorted_df = master.loc[master["MP"] > 10].get(["PID", "Player", col_header]).sort_values(col_header, ascending = False)
+        sorted_df = master.loc[master["MP"] > 10].get(["PID", "Player", col_header]).sort_values(col_header, ascending = True)
         sorted_df.set_index(["PID","Player"])
         sorted_df.reset_index(inplace=True)
         sorted_df[col_header+"_rank"] = sorted_df.index
@@ -69,8 +69,8 @@ def calculate_percentile(year, headers, name):
         else:
             output_df = output_df.merge(sorted_df, on=["PID", "Player"])
 
-    output_df["Overall_Rank"] = (output_df[headers_rank].sum(axis=1).divide(len(headers)))
-    output_df = output_df.sort_values("Overall_Rank", ascending = True)
+    output_df["Overall_Rank"] = (output_df[headers_rank].sum(axis=1).divide(len(headers)).divide(len(output_df)).multiply(100))
+    output_df = output_df.sort_values("Overall_Rank", ascending = False)
     output_df.reset_index(inplace=True)
     output_df.__delitem__("index_x")
     output_df.__delitem__("index_y")
@@ -83,9 +83,9 @@ def multiple_percentiles(start, end, headers, name):
     for i in range(start, end+1):
         calculate_percentile(str(i),headers, name)
 
-# BasHeaders = ["PS/G", "AST", "TRB", "STL", "BLK"]
-# bas = "Basic"
-# AdvHeaders = ["PER", "TS%", "USG%", "WS/48", "VORP"]
-# adv = "Advanced"
-# multiple_percentiles(2018,2018, BasHeaders, bas)
-# multiple_percentiles(2018,2018, AdvHeaders, adv)
+BasHeaders = ["PS/G", "AST", "TRB", "STL", "BLK"]
+bas = "Basic"
+AdvHeaders = ["PER", "TS%", "USG%", "WS/48", "VORP"]
+adv = "Advanced"
+multiple_percentiles(1990,2018, BasHeaders, bas)
+multiple_percentiles(1990,2018, AdvHeaders, adv)
