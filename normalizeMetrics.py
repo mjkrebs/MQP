@@ -42,7 +42,9 @@ def getPlayerMetricCareer(playerID, rookieYear,metric):
 	stoppedFinding = 0
 	if(rookieYear <= 1989):
 		rookieYear = 1990
-	for year in range(rookieYear,2019):
+	for year in range(rookieYear,2018):
+		if(year == 1990 and metric == "Salary"):
+			continue
 		df = master_season_dfs[year - 1990]
 		df = df.loc[df['PID'] == playerID]
 		for row in df.itertuples():
@@ -50,8 +52,6 @@ def getPlayerMetricCareer(playerID, rookieYear,metric):
 			if(math.isnan(seasonValue)):
 				continue
 			numSeasons += 1
-			if(stoppedFinding > 1):
-				print("Comeback by: " + getattr(row, 'PID'))
 			stoppedFinding = 0
 			cumulativeValue += seasonValue
 			break
@@ -163,29 +163,46 @@ stats_df.to_excel(writer, 'Sheet1')
 writer.save()
 
 """
+
+#Add a list here
 playerID_list = list()
 metric1_list = list()
 metric2_list = list()
 metric3_list = list()
 metric4_list = list()
 metric5_list = list()
+metric6_list = list()
+
+
 for row in masterFrame.itertuples(index = True, name='Pandas'):
 	playerID = getattr(row, 'PID')
-	print(playerID)
-	metric1Value, s = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "WS")
-	metric2Value, s = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "PER")
-	metric3Value, s = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "VORP")
-	metric4Value, s = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "BPercentile")
-	metric5Value, s = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "APercentile")
+	print(playerID + " " + str(getattr(row,'RkYear')))
+	#Add a getPlayerMetric here output = (cumulative value, num of seasons)
+	metric1Value, a = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "WS")
+	metric2Value, b = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "PER")
+	metric3Value, c = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "VORP")
+	metric4Value, d = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "BPercentile_y")
+	metric5Value, e = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "APercentile_y")
+	metric6value, f = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "Salary")
+	
+	#Append to the list here
 	playerID_list.append(playerID)
-	metric1_list.append(metric1Value)
-	metric2_list.append(metric2Value)
-	metric3_list.append(metric3Value)
+	metric1_list.append(metric1Value/a)
+	metric2_list.append(metric2Value/b)
+	metric3_list.append(metric3Value/c)
+	metric4_list.append(metric4Value/d)
+	metric5_list.append(metric5Value/e)
+	metric6_list.append(metric6value/f)
 
+#add (header title, list) 
 stats = [('Player ID', playerID_list),
 		 ('WS', metric1_list),
-		 ('PER', metric2_list)]
+		 ('PER', metric2_list),
+		 ('VORP',metric3_list),
+		 ('BPercentile',metric4_list),
+		 ('APercentile',metric5_list),
+		 ('Salary', metric6_list)]
 stats_df = pd.DataFrame.from_items(stats)
-writer = pd.ExcelWriter('ScatterPlot.xlsx')
+writer = pd.ExcelWriter('AllMetrics.xlsx')
 stats_df.to_excel(writer, 'Sheet1')
 writer.save()
