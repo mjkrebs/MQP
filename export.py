@@ -1,6 +1,7 @@
 import xlrd
 import xlsxwriter
 import pandas as pd
+import createPlayerFile
 
 #Merge Sort
 def merge(a, b, i, type):
@@ -99,11 +100,11 @@ def export(table,name, y):
 
 
 def make_master(year):
-    make_awards_file(year)
+    # make_awards_file(year)
 
-    pg = pd.read_excel("Resources/"+year+"/PG_"+year+".xlsx", sheetname="Sheet1")
+    pg = pd.read_excel("Resources/"+str(year)+"/PG_"+str(year)+".xlsx")
     pg['Player'] = pg['Player'].map(lambda x: x.lstrip('*'))
-    Adv = pd.read_excel("Resources/"+year+"/Advanced_"+year+".xlsx")
+    Adv = pd.read_excel("Resources/"+str(year)+"/Advanced_"+str(year)+".xlsx")
     Adv.__delitem__("PID")
     Adv.__delitem__("Player")
     Adv.__delitem__("Age")
@@ -111,7 +112,7 @@ def make_master(year):
     Adv.__delitem__("G")
     Adv.__delitem__("Tm")
 
-    tot = pd.read_excel("Resources/" + year + "/Totals_" + year + ".xlsx")
+    tot = pd.read_excel("Resources/" + str(year) + "/Totals_" + str(year) + ".xlsx")
     tot.__delitem__("PID")
     tot.__delitem__("Player")
     tot.__delitem__("Age")
@@ -119,10 +120,10 @@ def make_master(year):
     tot.__delitem__("G")
     tot.__delitem__("Tm")
 
-    awards = pd.read_excel("Resources/" + year + "/Binary_Awards_" + year + ".xlsx")
+    awards = pd.read_excel("Resources/" + str(year) + "/Binary_Awards_" + str(year) + ".xlsx")
 
     result = pd.concat([pg, Adv, awards], axis=1)
-    result.to_excel("Resources/"+year+"/Master_"+year+".xlsx")
+    result.to_excel("Resources/"+str(year)+"/Master_"+str(year)+".xlsx")
 
 
 def make_awards_file(year):
@@ -214,3 +215,161 @@ def make_awards_file(year):
 def multiple_masters(start, end):
     for i in range(start, end+1):
         make_master(str(i))
+
+
+def salary_cleanup(start_year, end_year):
+    f = open("Resources/nba_salaries_1990_to_2018.csv","r")
+    all_file = f.read()
+    for i in range(start_year, end_year+1):
+        s_year = str(i)
+        players = re.findall('(.+),(\d+),(' + s_year + '),(\d+),(\w+),(\w+ \w+)', all_file)
+        correct_players = []
+        for player in players:
+            firstname = ""
+            lastname = ""
+            player_names = re.findall('(\w+)', player[0])
+            for names in range(len(player_names)):
+                if names == len(player_names)-1:
+                    lastname = player_names[names]
+                else:
+                    firstname = firstname + player_names[names]
+            fixed_player = []
+            for col in range(len(player)):
+                if col == 0:
+                    fixed_player.append(lastname + " " + firstname)
+                else:
+                    fixed_player.append(player[col])
+            correct_players.append(fixed_player)
+        sorted_players = export.sort_by_column(correct_players, 0,"str")
+        tempout = open("Resources/" + s_year + "/Salary_" + s_year + ".csv", "w+")
+        for player in sorted_players:
+            for col in range(len(player)):
+                tempout.write(player[col])
+                if col == len(player)-1:
+                    tempout.write("\n")
+                else:
+                    tempout.write(",")
+    f.close()
+
+
+def add_PID_master(start_year, end_year):
+    year = start_year
+    while year <= end_year:
+        s_year = str(year)
+        foldername = "Resources/" + s_year + "/"
+        master = pd.read_excel("Resources/" + s_year + "/Master_" + s_year + ".xlsx")
+        players = []
+        player_ids = []
+        player_names = get_PIDS()
+
+        for index, row in master.iterrows():
+            names = re.findall('(\w+|\w.\w.) (\w+)', str(row["Player"]))
+            players.append(names)
+        for i in range(len(players)):
+            if len(players[i][0])>0 and "." not in players[i][0][1]:
+                name = players[i][0][2] + players[i][0][0]
+                player_names.append(name)
+                player_ids.append(name + "0" + str(player_names.count(name)))
+            elif len(players)>0:
+                name = players[i][0][2] + players[i][0][0][0] + players[i][0][1][0]
+                player_names.append(name)
+                player_ids.append(name + "0" + str(player_names.count(name)))
+        write_to_PIDS(player_names)
+        try:
+            master.insert(0, "PID", player_ids, False)
+            writer = pd.ExcelWriter("Resources/" + s_year + "/Master_" + s_year + ".xlsx")
+            master.to_excel(writer, 'Master')
+            writer.save()
+        except Exception as e:
+            print(e)
+        year = year + 1
+
+
+def make_master_player():
+    master_draft = pd.read_excel("Master_Draft.xlsx")
+    master_draft.set_index(['PID'])
+
+    for year in range(1990, 1991):
+        #TODO
+        # What we need to do here is add all of the players who are in the master list and also not in the master draft and add them in
+        print("")
+
+
+# Note that players from early drafts who don't have stats at all in basketball reference do not have a PID, so we should ignore them.
+def make_master_draft():
+    master_draft = pd.DataFrame
+    first = 1
+    for year in range(1976, 2019):
+        draft = pd.read_excel("Resources/" + str(year) + "/Draft_" + str(year) + ".xlsx")
+        draft = draft[["PID", "Player", "Pk","Tm","College"]]
+        draft["RkYear"] = year
+        draft.columns = ['PID', "Player", "Pk", "DraftTeam", "College", "RkYear"]
+        if first == 1:
+            master_draft = draft
+            first = 2
+        else:
+            master_draft = pd.concat([draft, master_draft])
+    pids, names = createPlayerFile.all_players()
+    drafted_pids = master_draft["PID"].values
+    undrafted_pids = []
+    undrafted_names = []
+    for i in range(len(pids)):
+        if " " in pids[i] or pids[i] in drafted_pids:
+            continue
+        else:
+            undrafted_pids.append(pids[i])
+            undrafted_names.append(names[i])
+    master_draft_removed = master_draft.values
+
+
+    master_draft.to_excel("Master_Draft.xlsx")
+    undrafted_players = pd.DataFrame({"PID":undrafted_pids, "Player":undrafted_names,"Pk":61, "DraftTeam":0, "College":0, "RkYear":1990})
+    print(undrafted_players)
+    master_players = master_draft.append(undrafted_players)
+    master_players = master_players.set_index("PID")
+    master_players = master_players.sort_index()
+    master_players.to_excel("Master_Players.xlsx")
+
+    return master_draft
+
+
+def percentile_to_master():
+    for year in range(1990,2019):
+        pdf = pd.read_excel("Resources/" + str(year) + "/Basic_Percentile_" + str(year) + ".xlsx").get(["PID","Overall_Rank"])
+        adf = pd.read_excel("Resources/" + str(year) + "/Advanced_Percentile_" + str(year) + ".xlsx").get(["PID","Overall_Rank"])
+        master = pd.read_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
+
+        pdf.set_index(["PID"])
+        adf.set_index(["PID"])
+        master.set_index(["PID"])
+
+        pdf.columns = ["PID", "BPercentile"]
+        adf.columns = ["PID", "APercentile"]
+
+        master = master.merge(pdf, on=["PID"])
+        master = master.merge(adf, on=["PID"])
+        master.to_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
+
+
+def salary_master():
+    salary = pd.read_excel("Master_Salary.xlsx")
+    salary = salary.get(["player", "salary", "season_end", "team"])
+    salary.columns = ["Player", "Salary", "Year", "Tm"]
+    salary.set_index(["Player", "Tm"])
+    for year in range(1991, 2019):
+        temp= salary.loc[salary["Year"] == year].get(["Player", "Salary", "Tm"])
+        master = pd.read_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
+        master.set_index(["Player", "Tm"])
+        try:
+            master.__delitem__("Salary")
+        except Exception as e:
+            print(e)
+        master = master.merge(temp, on=(["Player","Tm"]))
+        sal = master['Salary']
+        master.__delitem__("Salary")
+        master.insert(5,"Salary", sal)
+        master.to_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
+
+# percentile_to_master()
+# make_master(2018)
+salary_master()
