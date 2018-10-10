@@ -13,6 +13,7 @@ import math
 def normalizeFunction(value,maxValue):
 	return (value / maxValue) * 100
 
+
 #finds the maximum value of the given metric, then normalizes all values and saves in the master season sheets.
 def	normalizeMetric(metric):
 	maxVal = -100

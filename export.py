@@ -372,4 +372,4 @@ def salary_master():
 
 # percentile_to_master()
 # make_master(2018)
-salary_master()
+# salary_master()

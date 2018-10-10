@@ -83,9 +83,9 @@ def multiple_percentiles(start, end, headers, name):
     for i in range(start, end+1):
         calculate_percentile(str(i),headers, name)
 
-BasHeaders = ["PS/G", "AST", "TRB", "STL", "BLK"]
-bas = "Basic"
-AdvHeaders = ["PER", "TS%", "USG%", "WS/48", "VORP"]
-adv = "Advanced"
-multiple_percentiles(2018,2018, BasHeaders, bas)
-multiple_percentiles(2018,2018, AdvHeaders, adv)
+# BasHeaders = ["PS/G", "AST", "TRB", "STL", "BLK"]
+# bas = "Basic"
+# AdvHeaders = ["PER", "TS%", "USG%", "WS/48", "VORP"]
+# adv = "Advanced"
+# multiple_percentiles(2018,2018, BasHeaders, bas)
+# multiple_percentiles(2018,2018, AdvHeaders, adv)
