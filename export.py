@@ -370,6 +370,6 @@ def salary_master():
         master.insert(5,"Salary", sal)
         master.to_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
 
-multiple_masters(1990, 2018)
-percentile_to_master()
-salary_master()
+multiple_masters(2007,2008)
+#percentile_to_master()
+#salary_master()
