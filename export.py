@@ -2,6 +2,8 @@ import xlrd
 import xlsxwriter
 import pandas as pd
 import createPlayerFile
+import percentile
+import re
 
 #Merge Sort
 def merge(a, b, i, type):
@@ -252,39 +254,6 @@ def salary_cleanup(start_year, end_year):
     f.close()
 
 
-def add_PID_master(start_year, end_year):
-    year = start_year
-    while year <= end_year:
-        s_year = str(year)
-        foldername = "Resources/" + s_year + "/"
-        master = pd.read_excel("Resources/" + s_year + "/Master_" + s_year + ".xlsx")
-        players = []
-        player_ids = []
-        player_names = get_PIDS()
-
-        for index, row in master.iterrows():
-            names = re.findall('(\w+|\w.\w.) (\w+)', str(row["Player"]))
-            players.append(names)
-        for i in range(len(players)):
-            if len(players[i][0])>0 and "." not in players[i][0][1]:
-                name = players[i][0][2] + players[i][0][0]
-                player_names.append(name)
-                player_ids.append(name + "0" + str(player_names.count(name)))
-            elif len(players)>0:
-                name = players[i][0][2] + players[i][0][0][0] + players[i][0][1][0]
-                player_names.append(name)
-                player_ids.append(name + "0" + str(player_names.count(name)))
-        write_to_PIDS(player_names)
-        try:
-            master.insert(0, "PID", player_ids, False)
-            writer = pd.ExcelWriter("Resources/" + s_year + "/Master_" + s_year + ".xlsx")
-            master.to_excel(writer, 'Master')
-            writer.save()
-        except Exception as e:
-            print(e)
-        year = year + 1
-
-
 def make_master_player():
     master_draft = pd.read_excel("Master_Draft.xlsx")
     master_draft.set_index(['PID'])
@@ -334,7 +303,7 @@ def make_master_draft():
 
 
 def percentile_to_master():
-    for year in range(1990, 2019):
+    for year in range(2007, 2008):
         pdf = pd.read_excel("Resources/" + str(year) + "/Basic_Percentile_" + str(year) + ".xlsx").get(["PID","Overall_Rank"])
         adf = pd.read_excel("Resources/" + str(year) + "/Advanced_Percentile_" + str(year) + ".xlsx").get(["PID","Overall_Rank"])
         master = pd.read_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
@@ -355,21 +324,39 @@ def salary_master():
     salary = pd.read_excel("Master_Salary.xlsx")
     salary = salary.get(["player", "salary", "season_end", "team"])
     salary.columns = ["Player", "Salary", "Year", "Tm"]
-    salary.set_index(["Player", "Tm"])
-    for year in range(1991, 2019):
-        temp= salary.loc[salary["Year"] == year].get(["Player", "Salary", "Tm"])
+    salary.set_index(["Player"])
+    print(len(salary))
+    for year in range(2007, 2008):
+        print(len(salary.loc[salary["Year"] == year]))
+        temp = salary.loc[salary["Year"] == year].get(["Player", "Salary"])
+        print(len(temp))
         master = pd.read_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
-        master.set_index(["Player", "Tm"])
+        master.set_index(["Player"])
         try:
             master.__delitem__("Salary")
         except Exception as e:
             print(e)
-        master = master.merge(temp, on=(["Player","Tm"]))
+        master = master.merge(temp, on=(["Player"]), how="outer")
         sal = master['Salary']
         master.__delitem__("Salary")
         master.insert(5,"Salary", sal)
         master.to_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
 
-multiple_masters(1990, 2018)
-percentile_to_master()
+
+
+# First make the master sheets
+multiple_masters(2007, 2007)
+
+#Then make the percentile sheets from the master sheets
+# BasHeaders = ["PS/G", "AST", "TRB", "STL", "BLK"]
+# bas = "Basic"
+# AdvHeaders = ["PER", "TS%", "USG%", "WS/48", "VORP"]
+# adv = "Advanced"
+# percentile.multiple_percentiles(1990,2018, BasHeaders, bas)
+# percentile.multiple_percentiles(1990,2018, AdvHeaders, adv)
+
+#Add the percentile metrics to master
+# percentile_to_master()
+
+#Add the salary to the master sheet
 salary_master()

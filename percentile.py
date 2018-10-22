@@ -53,12 +53,13 @@ def sort_by_column(table, col, val):
 
 def calculate_percentile(year, headers, name):
     master = pd.read_excel("Resources/" + year + "/Master_" + year + ".xlsx")
+    print(len(master))
     output_df = pd.DataFrame()
     headers_rank = []
     first = 1
     for col_header in headers:
         # Here is where I am applying a cutoff of 10 minutes minimum played
-        sorted_df = master.loc[master["MP"] > 10].get(["PID", "Player", col_header]).sort_values(col_header, ascending = True)
+        sorted_df = master.get(["PID", "Player", col_header]).sort_values(col_header, ascending = True)
         sorted_df.set_index(["PID","Player"])
         sorted_df.reset_index(inplace=True)
         sorted_df[col_header+"_rank"] = sorted_df.index

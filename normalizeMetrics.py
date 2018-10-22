@@ -42,7 +42,7 @@ def getPlayerMetricCareer(playerID, rookieYear,metric):
 	stoppedFinding = 0
 	if(rookieYear <= 1989):
 		rookieYear = 1990
-	for year in range(rookieYear,2018):
+	for year in range(rookieYear,2019):
 		if(year == 1990 and metric == "Salary"):
 			continue
 		df = master_season_dfs[year - 1990]
@@ -181,8 +181,8 @@ for row in masterFrame.itertuples(index = True, name='Pandas'):
 	metric1Value, a = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "WS")
 	metric2Value, b = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "PER")
 	metric3Value, c = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "VORP")
-	metric4Value, d = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "BPercentile_y")
-	metric5Value, e = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "APercentile_y")
+	metric4Value, d = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "BPercentile")
+	metric5Value, e = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "APercentile")
 	metric6value, f = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "Salary")
 	
 	#Append to the list here
@@ -203,6 +203,6 @@ stats = [('Player ID', playerID_list),
 		 ('APercentile',metric5_list),
 		 ('Salary', metric6_list)]
 stats_df = pd.DataFrame.from_items(stats)
-writer = pd.ExcelWriter('AllMetrics.xlsx')
+writer = pd.ExcelWriter('AllMetrics1.xlsx')
 stats_df.to_excel(writer, 'Sheet1')
 writer.save()
