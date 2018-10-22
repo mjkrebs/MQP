@@ -342,11 +342,10 @@ def salary_master():
         master.insert(5,"Salary", sal)
         master.to_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
 
-<<<<<<< HEAD
 
 
 # First make the master sheets
-multiple_masters(2007, 2007)
+# multiple_masters(2007, 2007)
 
 #Then make the percentile sheets from the master sheets
 # BasHeaders = ["PS/G", "AST", "TRB", "STL", "BLK"]
@@ -360,9 +359,7 @@ multiple_masters(2007, 2007)
 # percentile_to_master()
 
 #Add the salary to the master sheet
-salary_master()
-=======
-multiple_masters(2007,2008)
+# salary_master()
+# multiple_masters(2007,2008)
 #percentile_to_master()
 #salary_master()
->>>>>>> ff4ac9ac528fcb022c80596832b17fe86e1571b9
