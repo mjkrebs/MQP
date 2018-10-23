@@ -105,7 +105,7 @@ def make_master(year):
     # make_awards_file(year)
 
     pg = pd.read_excel("Resources/"+str(year)+"/PG_"+str(year)+".xlsx")
-    pg['Player'] = pg['Player'].map(lambda x: x.lstrip('*'))
+    pg['Player'] = pg['Player'].map(lambda x: x.rstrip('*'))
     Adv = pd.read_excel("Resources/"+str(year)+"/Advanced_"+str(year)+".xlsx")
     Adv.__delitem__("PID")
     Adv.__delitem__("Player")
@@ -321,13 +321,11 @@ def percentile_to_master():
 
 
 def salary_master():
-    salary = pd.read_excel("Master_Salary.xlsx")
-    salary = salary.get(["player", "salary", "season_end", "team"])
+    salary = pd.read_excel("NBA_Salary_History.xlsx")
+    salary = salary.get(["Player", "Salary", "YearEnd", "Team"])
     salary.columns = ["Player", "Salary", "Year", "Tm"]
     salary.set_index(["Player"])
-    print(len(salary))
-    for year in range(2007, 2008):
-        print(len(salary.loc[salary["Year"] == year]))
+    for year in range(1991, 2018):
         temp = salary.loc[salary["Year"] == year].get(["Player", "Salary"])
         print(len(temp))
         master = pd.read_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
@@ -337,6 +335,15 @@ def salary_master():
         except Exception as e:
             print(e)
         master = master.merge(temp, on=(["Player"]), how="outer")
+
+        # This line below is where we fill in the values where there is no
+        master.Salary.fillna(value=0, inplace=True)
+        # This two lines remove the people at the bottom, who are the people in the salary sheet but not in master sheet.
+        # Basically these are people who were under contract but never played in that season
+        # E.g. Shawn Bradley in 2007
+        master['PID'].replace('', pd.np.nan, inplace=True)
+        master.dropna(subset=['PID'], inplace=True)
+
         sal = master['Salary']
         master.__delitem__("Salary")
         master.insert(5,"Salary", sal)
@@ -345,9 +352,9 @@ def salary_master():
 
 
 # First make the master sheets
-# multiple_masters(2007, 2007)
+# multiple_masters(1990, 2018)
 
-#Then make the percentile sheets from the master sheets
+# Then make the percentile sheets from the master sheets
 # BasHeaders = ["PS/G", "AST", "TRB", "STL", "BLK"]
 # bas = "Basic"
 # AdvHeaders = ["PER", "TS%", "USG%", "WS/48", "VORP"]
@@ -355,11 +362,8 @@ def salary_master():
 # percentile.multiple_percentiles(1990,2018, BasHeaders, bas)
 # percentile.multiple_percentiles(1990,2018, AdvHeaders, adv)
 
-#Add the percentile metrics to master
+# Add the percentile metrics to master
 # percentile_to_master()
 
-#Add the salary to the master sheet
+# Add the salary to the master sheet
 # salary_master()
-# multiple_masters(2007,2008)
-#percentile_to_master()
-#salary_master()

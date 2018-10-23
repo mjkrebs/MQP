@@ -53,7 +53,6 @@ def sort_by_column(table, col, val):
 
 def calculate_percentile(year, headers, name):
     master = pd.read_excel("Resources/" + year + "/Master_" + year + ".xlsx")
-    print(len(master))
     output_df = pd.DataFrame()
     headers_rank = []
     first = 1
