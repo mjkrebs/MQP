@@ -302,8 +302,8 @@ def make_master_draft():
     return master_draft
 
 
-def percentile_to_master():
-    for year in range(1990, 2018):
+def percentile_to_master(start, end):
+    for year in range(start, end+1):
         pdf = pd.read_excel("Resources/" + str(year) + "/Basic_Percentile_" + str(year) + ".xlsx").get(["PID","Overall_Rank"])
         adf = pd.read_excel("Resources/" + str(year) + "/Advanced_Percentile_" + str(year) + ".xlsx").get(["PID","Overall_Rank"])
         master = pd.read_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
@@ -320,12 +320,14 @@ def percentile_to_master():
         master.to_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
         print(str(year))
 
-def salary_master():
+def salary_master(start, end):
     salary = pd.read_excel("NBA_Salary_History.xlsx")
     salary = salary.get(["Player", "Salary", "YearEnd", "Team"])
     salary.columns = ["Player", "Salary", "Year", "Tm"]
     salary.set_index(["Player"])
-    for year in range(1991, 2018):
+    if start == 1990:
+        start +=1
+    for year in range(start, end+1):
         temp = salary.loc[salary["Year"] == year].get(["Player", "Salary"])
         print(len(temp))
         master = pd.read_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
@@ -349,21 +351,39 @@ def salary_master():
         master.insert(5,"Salary", sal)
         master.to_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
 
+# Points*1 + RBS*1.2 + 3&stl + 3*blk + 1.5*ast - TO*1
+def fantasy_master(start, end):
+    for year in range(start, end+1):
+        master = pd.read_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
+        master.set_index(["Player"])
+        try:
+            master.__delitem__("Fantasy")
+        except Exception as e:
+            print(e)
+
+        master["PS/G"].fillna(value=(master["3P"] *3 + master["2P"]*2 + master["FT"]), inplace=True)
+        master["Fantasy"] = master["G"]*(master['PS/G']*1 + master['AST']*1.5 + master["TRB"]*1.2 + master["STL"]*3 + master["BLK"]*3 - master["TOV"])
+        master.to_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
 
 
+start = 1990
+end = 2018
 # First make the master sheets
-# multiple_masters(1990, 2018)
+multiple_masters(start, end)
 
 # Then make the percentile sheets from the master sheets
-# BasHeaders = ["PS/G", "AST", "TRB", "STL", "BLK"]
-# bas = "Basic"
-# AdvHeaders = ["TS%", "AST%", "TRB%", "STL%", "BLK%"]
-# adv = "Advanced"
-# percentile.multiple_percentiles(1990,2018, BasHeaders, bas)
-# percentile.multiple_percentiles(1990,2018, AdvHeaders, adv)
+BasHeaders = ["PS/G", "AST", "TRB", "STL", "BLK"]
+bas = "Basic"
+AdvHeaders = ["TS%", "AST%", "TRB%", "STL%", "BLK%"]
+adv = "Advanced"
+percentile.multiple_percentiles(start,end, BasHeaders, bas)
+percentile.multiple_percentiles(start,end, AdvHeaders, adv)
 
 # Add the percentile metrics to master
-# percentile_to_master()
+percentile_to_master(start, end)
 
 # Add the salary to the master sheet
-# salary_master()
+salary_master(start, end)
+
+# Add the fantasy points to master
+fantasy_master(start, end)
