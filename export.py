@@ -303,7 +303,7 @@ def make_master_draft():
 
 
 def percentile_to_master():
-    for year in range(2007, 2008):
+    for year in range(1990, 2018):
         pdf = pd.read_excel("Resources/" + str(year) + "/Basic_Percentile_" + str(year) + ".xlsx").get(["PID","Overall_Rank"])
         adf = pd.read_excel("Resources/" + str(year) + "/Advanced_Percentile_" + str(year) + ".xlsx").get(["PID","Overall_Rank"])
         master = pd.read_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
@@ -318,7 +318,7 @@ def percentile_to_master():
         master = master.merge(pdf, on=["PID"])
         master = master.merge(adf, on=["PID"])
         master.to_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
-
+        print(str(year))
 
 def salary_master():
     salary = pd.read_excel("NBA_Salary_History.xlsx")
@@ -357,7 +357,7 @@ def salary_master():
 # Then make the percentile sheets from the master sheets
 # BasHeaders = ["PS/G", "AST", "TRB", "STL", "BLK"]
 # bas = "Basic"
-# AdvHeaders = ["PER", "TS%", "USG%", "WS/48", "VORP"]
+# AdvHeaders = ["TS%", "AST%", "TRB%", "STL%", "BLK%"]
 # adv = "Advanced"
 # percentile.multiple_percentiles(1990,2018, BasHeaders, bas)
 # percentile.multiple_percentiles(1990,2018, AdvHeaders, adv)
