@@ -63,6 +63,20 @@ def getPlayerMetricCareer(playerID, rookieYear,metric):
 	return cumulativeValue, numSeasons
 
 
+def getNumSeasons(playerID,rookieYear):
+	numSeasons = 0
+	if(rookieYear <= 1989):
+		rookieYear = 1990
+	for year in range(rookieYear,2019):
+		df = master_season_dfs[year-1990]
+		df = df.loc[df['PID'] == playerID]
+		for row in df.itertuples():
+			numSeasons +=1
+			break
+	if(numSeasons == 0):
+		numSeasons += 1
+	return numSeasons
+
 #this calculates the total metric for the draft position then divides by numSeasons. 
 #An alternative would be to calculate the mean value for each player first, then take the average of averages.
 
@@ -100,6 +114,34 @@ def getCumulativeMetricForDraftPosition(df, draftPosition, metric):
 
 	return OGsum, numPlayersAtPick
 
+def getMultipleMetricsPlayerCareer(playerID,rookieYear,metrics):
+	cumulativeValues = list()
+	for metric in metrics:
+		cumulativeValues.append(0)
+	stoppedFinding = 0
+	if(rookieYear <= 1989):
+		rookieYear = 1990
+	for year in range(rookieYear,2018):
+		df = master_season_dfs[year - 1990]
+		df = df.loc[df['PID'] == playerID]
+		index = 0
+		for row in df.itertuples():
+			for metric in metrics:
+				if(year == 1990 and metric == "Salary"):
+					continue
+				seasonValue = getattr(row,metric)
+				if(seasonValue == "Unknown" or math.isnan(seasonValue)):
+					seasonValue = 0
+					continue
+				stoppedFinding = 0
+				cumulativeValues[index] += seasonValue
+				index += 1
+
+			break
+		stoppedFinding += 1
+		if(stoppedFinding == 3):
+			break
+	return cumulativeValues
 
 
 
@@ -172,27 +214,35 @@ metric3_list = list()
 metric4_list = list()
 metric5_list = list()
 metric6_list = list()
+metric7_list = list()
 
+metricNames = ["WS", "PER", "VORP", "BPercentile", "APercentile", "Salary", "Fantasy"]
 
 for row in masterFrame.itertuples(index = True, name='Pandas'):
 	playerID = getattr(row, 'PID')
 	print(playerID + " " + str(getattr(row,'RkYear')))
 	#Add a getPlayerMetric here output = (cumulative value, num of seasons)
+	playerValues = getMultipleMetricsPlayerCareer(playerID,getattr(row,'RkYear'),metricNames)
+	numSeasons = getNumSeasons(playerID,getattr(row,'RkYear'))
+	"""
 	metric1Value, a = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "WS")
 	metric2Value, b = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "PER")
 	metric3Value, c = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "VORP")
 	metric4Value, d = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "BPercentile")
 	metric5Value, e = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "APercentile")
 	metric6value, f = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "Salary")
-	
+	metric7value, g = getPlayerMetricCareer(playerID, getattr(row,'RkYear'), "Fantasy")
+	"""
 	#Append to the list here
 	playerID_list.append(playerID)
-	metric1_list.append(metric1Value/a)
-	metric2_list.append(metric2Value/b)
-	metric3_list.append(metric3Value/c)
-	metric4_list.append(metric4Value/d)
-	metric5_list.append(metric5Value/e)
-	metric6_list.append(metric6value/f)
+	metric1_list.append(playerValues[0]/numSeasons)
+	metric2_list.append(playerValues[1]/numSeasons)
+	metric3_list.append(playerValues[2]/numSeasons)
+	metric4_list.append(playerValues[3]/numSeasons)
+	metric5_list.append(playerValues[4]/numSeasons)
+	metric6_list.append(playerValues[5]/numSeasons)
+	metric7_list.append(playerValues[6]/numSeasons)
+	
 
 #add (header title, list) 
 stats = [('Player ID', playerID_list),
@@ -201,8 +251,9 @@ stats = [('Player ID', playerID_list),
 		 ('VORP',metric3_list),
 		 ('BPercentile',metric4_list),
 		 ('APercentile',metric5_list),
-		 ('Salary', metric6_list)]
+		 ('Salary', metric6_list),
+		 ('Fantasy', metric7_list)]
 stats_df = pd.DataFrame.from_items(stats)
-writer = pd.ExcelWriter('AllMetrics1.xlsx')
+writer = pd.ExcelWriter('AllMetricsPerSeason.xlsx')
 stats_df.to_excel(writer, 'Sheet1')
 writer.save()
