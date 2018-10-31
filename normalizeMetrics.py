@@ -136,7 +136,6 @@ def getMultipleMetricsPlayerCareer(playerID,rookieYear,metrics):
 				stoppedFinding = 0
 				cumulativeValues[index] += seasonValue
 				index += 1
-
 			break
 		stoppedFinding += 1
 		if(stoppedFinding == 3):
