@@ -366,24 +366,43 @@ def fantasy_master(start, end):
         master.to_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
 
 
-start = 1990
+def master_ncaa_teams(start,end):
+    result = pd.DataFrame
+    for year in range(start, end+1):
+        s_year = str(year)
+        curr = pd.read_excel("NCAA/" + s_year + "/School_Stats" + s_year + ".xlsx").get(["ID", "School"])
+        curr.set_index(["ID", "School"])
+        curr["School"] = curr["School"].apply(lambda x: x.rstrip("NCAA"))
+        if result.empty:
+            result = curr
+        else:
+            result = result.merge(curr, on=(["ID", "School"]), how='outer')
+    result = result.drop_duplicates("ID")
+    result = result.sort_values("ID")
+    result.to_excel("NCAA/master_teams.xlsx")
+
+
+
+start = 2000
 end = 2018
-# First make the master sheets
-multiple_masters(start, end)
+# # First make the master sheets
+# multiple_masters(start, end)
+#
+# # Then make the percentile sheets from the master sheets
+# BasHeaders = ["PS/G", "AST", "TRB", "STL", "BLK"]
+# bas = "Basic"
+# AdvHeaders = ["TS%", "AST%", "TRB%", "STL%", "BLK%"]
+# adv = "Advanced"
+# percentile.multiple_percentiles(start,end, BasHeaders, bas)
+# percentile.multiple_percentiles(start,end, AdvHeaders, adv)
+#
+# # Add the percentile metrics to master
+# percentile_to_master(start, end)
+#
+# # Add the salary to the master sheet
+# salary_master(start, end)
+#
+# # Add the fantasy points to master
+# fantasy_master(start, end)
 
-# Then make the percentile sheets from the master sheets
-BasHeaders = ["PS/G", "AST", "TRB", "STL", "BLK"]
-bas = "Basic"
-AdvHeaders = ["TS%", "AST%", "TRB%", "STL%", "BLK%"]
-adv = "Advanced"
-percentile.multiple_percentiles(start,end, BasHeaders, bas)
-percentile.multiple_percentiles(start,end, AdvHeaders, adv)
-
-# Add the percentile metrics to master
-percentile_to_master(start, end)
-
-# Add the salary to the master sheet
-salary_master(start, end)
-
-# Add the fantasy points to master
-fantasy_master(start, end)
+master_ncaa_teams(start, end)
