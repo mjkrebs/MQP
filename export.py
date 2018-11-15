@@ -1,8 +1,10 @@
+import difflib
+
 import xlrd
 import xlsxwriter
 import pandas as pd
 import createPlayerFile
-import percentile
+import numpy as np
 import re
 
 #Merge Sort
@@ -320,6 +322,7 @@ def percentile_to_master(start, end):
         master.to_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
         print(str(year))
 
+
 def salary_master(start, end):
     salary = pd.read_excel("NBA_Salary_History.xlsx")
     salary = salary.get(["Player", "Salary", "YearEnd", "Team"])
@@ -351,6 +354,7 @@ def salary_master(start, end):
         master.insert(5,"Salary", sal)
         master.to_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
 
+
 # Points*1 + RBS*1.2 + 3&stl + 3*blk + 1.5*ast - TO*1
 def fantasy_master(start, end):
     for year in range(start, end+1):
@@ -366,24 +370,98 @@ def fantasy_master(start, end):
         master.to_excel("Resources/" + str(year) + "/Master_" + str(year) + ".xlsx")
 
 
-start = 1990
+def master_ncaa_teams(start,end):
+    result = pd.DataFrame
+    for year in range(start, end+1):
+        s_year = str(year)
+        curr = pd.read_excel("NCAA/" + s_year + "/School_Stats" + s_year + ".xlsx").get(["ID", "School"])
+        curr.set_index(["ID", "School"])
+        curr["School"] = curr["School"].apply(lambda x: x.rstrip("NCAA"))
+        if result.empty:
+            result = curr
+        else:
+            result = result.merge(curr, on=(["ID", "School"]), how='outer')
+    result = result.drop_duplicates("ID")
+    result = result.sort_values("ID")
+    result.to_excel("NCAA/master_teams.xlsx")
+
+
+def fill_nba_players(start, end):
+    # We need to do two things, read the Teams nba roster and then go to the setting
+    master_teams = pd.read_excel("NCAA/master_teams.xlsx")
+    for year in range(start, end+1):
+        s_year = str(year)
+        print("\n\n\n\n" + s_year)
+        curr_master = pd.read_excel("NCAA/" + s_year + "/" + s_year + "_master_roster.xlsx")
+
+        # We need to fix the naming on all master sheets, we mad two 2PA
+        curr_master.columns = ["Team", "Player", "NBA", "G", "GS", "MP", "FG", "FGA", "FG%", "2P", "2PA", "2P%", "3P", "3PA", "3P%", "FT",
+                        "FTA","FT%", "ORB", "DRB", "TRB", "AST", "STL", "BLK", "TOV", "PF", "PTS"]
+        curr_ids = pd.read_excel("NCAA/master_teams_urls.xlsx")["URLS"]
+        x = 0
+        for id in curr_ids:
+            if id == "None":
+                continue
+            teams_nba_players = pd.read_excel("NCAA/Teams/" + id + "/NBA_Players_" + id + ".xlsx")
+            teams_nba_players = teams_nba_players.loc[teams_nba_players['Year'] == year]
+            for name in teams_nba_players["Player"]:
+                # player names are not consistent
+                curr_player_row = curr_master.loc[curr_master['Player'] == name]
+                if curr_player_row.empty:
+                    print(name)
+                    continue
+                index = curr_player_row.index[curr_player_row['Player'] == name]
+                index = index[0]
+                if index == -1:
+                    print("rip")
+                else:
+                    curr_player_row = curr_player_row.set_value(index, "NBA", 1)
+                    curr_player_row.set_index(["Team"])
+                    curr_master.set_index(["Team"])
+                    curr_master = curr_player_row.merge(curr_master, on=["Team", "Player", "G", "GS", "MP", "FG", "FGA", "FG%", "2P", "2PA", "2P%", "3P", "3PA", "3P%", "FT",
+                                "FTA","FT%", "ORB", "DRB", "TRB", "AST", "STL", "BLK", "TOV", "PF", "PTS"], how = "outer")
+                    curr_master["NBA_x"] = curr_master["NBA_x"].replace(r'\s+', np.nan, regex=True)
+                    curr_master["NBA_x"] = curr_master["NBA_x"].fillna(0)
+                    curr_master = curr_master.sort_values("Team")
+                    curr_master.insert(2, "NBA", curr_master["NBA_x"] + curr_master["NBA_y"])
+                    curr_master.__delitem__("NBA_x")
+                    curr_master.__delitem__("NBA_y")
+        curr_master.to_excel("NCAA/" + s_year + "/" + s_year + "_master_roster.xlsx")
+
+
+def get_nba_players(start, end):
+    for year in range(start, end + 1):
+        s_year = str(year)
+        curr_year = pd.read_excel("NCAA/" + s_year + "/" + s_year + "_master_roster.xlsx")
+        nba_players = curr_year[curr_year.NBA == 1]
+        nba_players.to_excel("NCAA/" + s_year + "/" + s_year + "_nba_players_stats.xlsx")
+
+
+start = 2000
 end = 2018
-# First make the master sheets
-multiple_masters(start, end)
 
-# Then make the percentile sheets from the master sheets
-BasHeaders = ["PS/G", "AST", "TRB", "STL", "BLK"]
-bas = "Basic"
-AdvHeaders = ["TS%", "AST%", "TRB%", "STL%", "BLK%"]
-adv = "Advanced"
-percentile.multiple_percentiles(start,end, BasHeaders, bas)
-percentile.multiple_percentiles(start,end, AdvHeaders, adv)
+# # First make the master sheets
+# multiple_masters(start, end)
+#
+# # Then make the percentile sheets from the master sheets
+# BasHeaders = ["PS/G", "AST", "TRB", "STL", "BLK"]
+# bas = "Basic"
+# AdvHeaders = ["TS%", "AST%", "TRB%", "STL%", "BLK%"]
+# adv = "Advanced"
+# percentile.multiple_percentiles(start,end, BasHeaders, bas)
+# percentile.multiple_percentiles(start,end, AdvHeaders, adv)
+#
+# # Add the percentile metrics to master
+# percentile_to_master(start, end)
+#
+# # Add the salary to the master sheet
+# salary_master(start, end)
+#
+# # Add the fantasy points to master
+# fantasy_master(start, end)
 
-# Add the percentile metrics to master
-percentile_to_master(start, end)
+# master_ncaa_teams(start, end)
 
-# Add the salary to the master sheet
-salary_master(start, end)
+# fill_nba_players(start, end)
 
-# Add the fantasy points to master
-fantasy_master(start, end)
+# get_nba_players(start, end)
