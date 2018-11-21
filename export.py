@@ -437,6 +437,19 @@ def get_nba_players(start, end):
         nba_players.to_excel("NCAA/" + s_year + "/" + s_year + "_nba_players_stats.xlsx")
 
 
+def make_NCAA_master_roster(start, end):
+    result = pd.DataFrame
+    for year in range(start, end+1):
+        s_year = str(year)
+        curr_year = pd.read_excel("NCAA/" + s_year + "/" + s_year + "_master_roster.xlsx")
+        if result.empty:
+            result = curr_year
+        else:
+            result = result.append(curr_year)
+    result.to_excel("test.xlsx")
+    result.to_csv("test.csv")
+
+
 start = 2000
 end = 2018
 
@@ -465,3 +478,4 @@ end = 2018
 # fill_nba_players(start, end)
 
 # get_nba_players(start, end)
+make_NCAA_master_roster(start, end)
