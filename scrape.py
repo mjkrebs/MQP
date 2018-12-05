@@ -131,6 +131,83 @@ class HTMLTableParser:
                 r.append((id,name))
             result = pd.DataFrame(r,columns=["ID","Team"])
             result.to_excel("NCAA/name_url.xlsx")
+        if _id == "all":
+            roster_pattern = "class=\"(left |left sr_nba)\" data-stat=\"player\" csk=\"((?:\w+ |\w+|\w+.){1,4},(?:\w+ |\w+|\w+.){1,4})\".+pos\" >(\w).+height\" csk=\"(\d+.\d+).+weight\" csk=\"(\d+)"
+            urllib.request.urlretrieve(url, "test.txt")
+            f = open("test.txt")
+            read = f.read()
+            x = re.findall(roster_pattern, read)
+            year = re.findall("itemprop=\"name\">(\d+-\d+)", read)[0]
+            nba = []
+            player = []
+            pos= []
+            height = []
+            weight = []
+            for element in x:
+                if element[0] == "left ":
+                    nba.append(0)
+                else:
+                    nba.append(1)
+                # Right here we need to turn this into fname lname from lname,fname
+                name = element[1].split(",")
+                name = name[1] + " " + name[0]
+                player.append(name)
+                pos.append(element[2])
+                height.append(element[3])
+                weight.append(element[4])
+
+            team = re.findall("https://www.sports-reference.com/cbb/schools/(\w+-\w+-\w+-\w+|\w+-\w+-\w+|\w+-\w+|\w+)", url)[0]
+            result = pd.DataFrame()
+            result["Team"] = pd.Series([team]*len(player))
+            result["Year"] = year
+            result["Player"] = player
+            result["NBA"] = nba
+            result["Pos"] = pos
+            result["Height"] = height
+            result["Weight"] = weight
+            result.to_excel("basic.xlsx")
+
+
+            table = soup.find_all('table', id="per_game")
+            # print(soup)
+            if len(table) > 0:
+                if type == "all":
+                    table1 =  [(1, self.parse_html_table_ncaa_by_id(t)) \
+                            for t in table]
+            else:
+                comments = soup.findAll(text=lambda text: isinstance(text, Comment))
+                rx = re.compile(r'<table.+?id="' + _id + '".+?>[\s\S]+?</table>')
+                for comment in comments:
+                    try:
+                        found = rx.search(comment.string).group(0)
+                        soup2 = BeautifulSoup(found, 'lxml')
+                        table = soup2.find_all('table', id=_id)
+                        if len(table) > 0:
+                            if type == "all":
+                                table1 =  [(1, self.parse_html_table_ncaa_by_id(t)) \
+                                        for t in table]
+                    except:
+                        pass
+            table0 = soup.find_all('table', id="advanced")
+            if len(table0) > 0:
+                if type == "all":
+                    table2 = [(1, self.parse_html_table_ncaa_by_id(t)) \
+                            for t in table0]
+            else:
+                comments = soup.findAll(text=lambda text: isinstance(text, Comment))
+                rx = re.compile(r'<table.+?id="' + "advanced" + '".+?>[\s\S]+?</table>')
+                for comment in comments:
+                    try:
+                        found = rx.search(comment.string).group(0)
+                        soup2 = BeautifulSoup(found, 'lxml')
+                        table0 = soup2.find_all('table', id="advanced")
+                        if len(table) > 0:
+                            if type == "all":
+                                table2 = [(1, self.parse_html_table_ncaa_by_id(t)) \
+                                          for t in table0]
+                    except:
+                        pass
+            return (table1, table2)
 
         if _id == "":
             table = soup.find_all('table')
@@ -149,7 +226,6 @@ class HTMLTableParser:
             elif type == "college_names":
                 return [(1, self.parse_html_table_ncaa_names(t)) \
                         for t in table]
-
         else:
             table = soup.find_all('table', id =_id)
             # print(soup)
@@ -169,7 +245,9 @@ class HTMLTableParser:
                 elif type == "college_names":
                     return [(1, self.parse_html_table_ncaa_names(t)) \
                             for t in table]
-
+                elif type=="by_id":
+                    return [(1, self.parse_html_table_ncaa_by_id(t)) \
+                            for t in table]
 
             else:
                 comments = soup.findAll(text=lambda text: isinstance(text, Comment))
@@ -192,7 +270,9 @@ class HTMLTableParser:
                             elif type == "college_names":
                                 return [(1, self.parse_html_table_ncaa_names(t)) \
                                         for t in table]
-
+                            elif type == "by_id":
+                                return [(1, self.parse_html_table_ncaa_by_id(t)) \
+                                        for t in table]
                     except:
                         pass
 
@@ -355,6 +435,45 @@ class HTMLTableParser:
                 row_marker += 1
         return data
 
+    def parse_html_table_ncaa_by_id(self, table):
+        n_columns = 0
+        n_rows = 0
+        column_names = []
+        for row in table.find_all('tr'):
+            # Determine the number of rows in the table
+            td_tags = row.find_all('td')
+            if len(td_tags) > 0:
+                n_rows += 1
+                if n_columns == 0:
+                    # Set the number of columns for our table
+                    n_columns = len(td_tags)
+            th_tags = row.find_all('th')
+            # TODO Make the below line not necessary for doing the PG, Adv, and Total
+            del th_tags[0]
+            if len(th_tags) > 0 and len(column_names) == 0:
+                for th in th_tags:
+                    column_names.append(th.get_text())
+        if len(column_names) > 0 and len(column_names) != n_columns:
+            raise Exception("Column titles do not match the number of columns")
+        # columns = column_names if len(column_names) > 0 else range(0, n_columns)
+        row_marker = 0
+        data = []
+        data.append(column_names)
+        for row in table.find_all('tr'):
+            column_marker = 0
+            columns = row.find_all('td')
+            r = []
+            for column in columns:
+                name = column.get_text()
+                if column.get_text() != '':
+                    r.append(column.get_text())
+                else:
+                    r.append('0.0')
+            if (len(r) > 0):
+                data.append(r)
+            if len(columns) > 0:
+                row_marker += 1
+        return data
     def parse_html_table_ncaa_names(self, table):
         n_columns = 0
         n_rows = 0
@@ -402,13 +521,19 @@ def crawl(url, name, type, id):
         export.export(t, name, False)
     else:
         table = hp.parse_url_ncaa(url, type, id)
+        if id == "all":
+            pg = table[0][0][1]
+            adv = table[1][0][1]
+            export.export(pg, "per_game", False)
+            export.export(adv, "advanced", False)
+            return 1
         if table==None or len(table)>0:
             try:
                 t = table[0][1]
                 export.export(t, name, False)
                 return 1
             except:
-                print("Empty table")
+                # print("Empty table")
                 return -1
         else:
             return -1
@@ -560,9 +685,42 @@ def pull_combine_stats():
         agi.to_excel("NCAA/Combine/combine_agility.xlsx")
 
 
+def pull_master_ncaa_data(start, end):
+    # First go through the years
+    # Then iterate through the master url sheet to get the teams urls
+    # Copy the text into a text file and the have a big regex which pulls the data we need
+    df = pd.read_excel("NCAA/master_teams_urls.xlsx")["ID"]
+    master = pd.DataFrame
+    for year in range(start, end+1):
+        s_year = str(year)
+        for id in df:
+            try:
+                crawl("https://www.sports-reference.com/cbb/schools/" + id + "/" + s_year + ".html", "basic",
+                      "all", "all")
+                # crawl("https://www.sports-reference.com/cbb/schools/" + id + "/" + s_year + ".html", "per_game",
+                #       "by_id", "per_game")
+                # crawl("https://www.sports-reference.com/cbb/schools/" + id + "/" + s_year + ".html", "advanced",
+                #       "by_id", "advanced")
+                basic = pd.read_excel("basic.xlsx")
+                pg = pd.read_excel("per_game.xlsx")
+                adv = pd.read_excel("advanced.xlsx")
+                basic = basic.merge(pg, on="Player")
+                basic = basic.merge(adv, on = "Player")
+                if master.empty:
+                    master = basic
+                else:
+                    master = master.append(basic)
+            except:
+                print(id + "is not present in the year " + s_year)
+
+        master.to_excel("all_NCAA_players_" + s_year + ".xlsx")
+    return
+
+
+
 start = time.time()
-start_year = 2000
-end_year = 2018
+start_year = 2015
+end_year = 2017
 # pull_player_data(start_year, end_year)
 # In order to run the below we need to not del[0] but when running the above line we need to in line 64
 # pull_season_solo_awards(start_year, end_year, 'all_awards')
@@ -589,6 +747,7 @@ end_year = 2018
 # for some reason agility 16-17 isnt loading, try again and place it in between tables where added break lines are
 # pull_combine_stats()
 
+pull_master_ncaa_data(start_year, end_year)
 end = time.time()
 print(end-start)
 

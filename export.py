@@ -449,6 +449,28 @@ def make_NCAA_master_roster(start, end):
     result.to_excel("test.xlsx")
     result.to_csv("test.csv")
 
+def convert_heights(df):
+    df["HandLength"] = df["HandLength"]
+    df["HandWidth"]
+    df["HeightNoShoes"]
+    df["HeightShoes"]
+    df["StandingReach"]
+    df["Wingspan"]
+
+
+def add_combine():
+    master = pd.read_excel("test.xlsx")
+    agility = pd.read_excel("NCAA/Combine/combine_agility.xlsx")
+    anthro = pd.read_excel("NCAA/Combine/combine_anthro.xlsx")
+    agility = agility.merge(anthro, on = 'Player',how='outer')
+    agility.to_excel("merged.xlsx")
+    master = master.merge(agility, on = 'Player', how='outer')
+    # master = convert_heights(master)
+    master_draft = pd.read_excel("Master_Draft.xlsx")
+    master = master.merge(master_draft, on = "Player", how = 'outer')
+    master.to_excel("master.xlsx")
+
+
 
 start = 2000
 end = 2018
@@ -478,4 +500,5 @@ end = 2018
 # fill_nba_players(start, end)
 
 # get_nba_players(start, end)
-make_NCAA_master_roster(start, end)
+# make_NCAA_master_roster(start, end)
+# add_combine()
