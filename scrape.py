@@ -526,6 +526,7 @@ def crawl(url, name, type, id):
             adv = table[1][0][1]
             export.export(pg, "per_game", False)
             export.export(adv, "advanced", False)
+
             return 1
         if table==None or len(table)>0:
             try:
@@ -690,8 +691,9 @@ def pull_master_ncaa_data(start, end):
     # Then iterate through the master url sheet to get the teams urls
     # Copy the text into a text file and the have a big regex which pulls the data we need
     df = pd.read_excel("NCAA/master_teams_urls.xlsx")["ID"]
-    master = pd.DataFrame
+
     for year in range(start, end+1):
+        master = pd.DataFrame
         s_year = str(year)
         for id in df:
             try:
@@ -713,14 +715,32 @@ def pull_master_ncaa_data(start, end):
             except:
                 print(id + "is not present in the year " + s_year)
 
-        master.to_excel("all_NCAA_players_" + s_year + ".xlsx")
+        master.to_excel("all_NCAA_players_zz" + s_year + ".xlsx")
     return
+
+def fix_column_names(start, end):
+    for year in range(start, end+1):
+        s_year = str(year)
+        curr = pd.read_excel("all_NCAA_players_" + s_year + ".xlsx")
+        # curr = curr[['Team', 'Year', 'Player', 'NBA', 'Pos', 'Height', 'Weight',
+        #              'G_x', 'GS_x', 'MP_x', 'FG', 'FGA', 'FG%', '2P', '2PA', '2P%',
+        #              '3P', '3PA', '3P%', 'FT', 'FTA', 'FT%', 'ORB', "DRB", 'TRB',
+        #              'AST', 'STL', 'BLK', 'TOV', 'PF', 'PTS', 'G_y', 'GS_y', 'MP_y',
+        #              'PER', 'TS%', 'eFG%', '3PAr', 'FTr', 'PProd','DRB%', 'TRB%',
+        #              'AST%', 'STL%', 'BLK%', 'TOV%', 'USG%', ' ', 'OWS', 'DWS', 'WS',
+        #              ' .1', 'OBPM', 'DBPM', 'BPM']]
+
+        curr.__delitem__(" ")
+        curr.__delitem__(" .1")
+        curr.to_excel("all_NCAA_players_" + s_year + ".xlsx")
+
+
 
 
 
 start = time.time()
-start_year = 2015
-end_year = 2017
+start_year = 2003
+end_year = 2018
 # pull_player_data(start_year, end_year)
 # In order to run the below we need to not del[0] but when running the above line we need to in line 64
 # pull_season_solo_awards(start_year, end_year, 'all_awards')
@@ -748,6 +768,7 @@ end_year = 2017
 # pull_combine_stats()
 
 pull_master_ncaa_data(start_year, end_year)
+# fix_column_names(2000,2000)
 end = time.time()
 print(end-start)
 
