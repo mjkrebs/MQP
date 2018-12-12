@@ -735,7 +735,13 @@ def fix_column_names(start, end):
         curr.to_excel("all_NCAA_players_" + s_year + ".xlsx")
 
 
-
+def append_ncaa(start, end):
+    first = pd.read_excel("all_NCAA_players_zz" + str(start) + ".xlsx")
+    for year in range(start + 1,end+1):
+        s_year = str(year)
+        curr = pd.read_excel("all_NCAA_players_zz" + s_year + ".xlsx")
+        first = first.append(curr)
+    first.to_excel("all_NCAA_test.xlsx")
 
 
 start = time.time()
@@ -767,8 +773,9 @@ end_year = 2018
 # for some reason agility 16-17 isnt loading, try again and place it in between tables where added break lines are
 # pull_combine_stats()
 
-pull_master_ncaa_data(start_year, end_year)
+# pull_master_ncaa_data(start_year, end_year)
 # fix_column_names(2000,2000)
+append_ncaa(2015,2018)
 end = time.time()
 print(end-start)
 
