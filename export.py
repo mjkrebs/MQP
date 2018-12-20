@@ -6,7 +6,7 @@ import pandas as pd
 import createPlayerFile
 import numpy as np
 import re
-
+from fuzzywuzzy import fuzz
 #Merge Sort
 def merge(a, b, i, type):
     c = []
@@ -470,10 +470,172 @@ def add_combine():
     master = master.merge(master_draft, on = "Player", how = 'outer')
     master.to_excel("master.xlsx")
 
+def add_draft_pos(start, end):
+    # master = pd.read_excel("all_NCAA_2015_2018.xlsx")
+    count = 0
+    for year in range(start, end+1):
+        s_year = str(year)
+        curr_draft = pd.read_excel("Resources/" + s_year + "/Draft_" + s_year + ".xlsx").get(["Player", "Pk","College"])
+        curr_draft = curr_draft.loc[curr_draft.College!="0.0"]
+        # print(curr_draft)
+        all_picks = curr_draft.Pk.values
+        curr_year = pd.read_excel("all_NCAA_players_zz" + s_year + ".xlsx")
+        merged = curr_year.merge(curr_draft, on="Player", how='outer')
+        exclude = merged.loc[merged.NBA>-1]
+        merged_picks = exclude.loc[exclude.Pk > 0]["Pk"].values
+        for pick in all_picks:
+            if pick not in merged_picks:
+                row = curr_draft.loc[curr_draft.Pk==pick]
+                # print(row.get("Player"))
+                all_names = curr_year.loc[curr_year.NBA==1]["Player"].values
+                found=0
+                for name in all_names:
+                    if fuzz.partial_ratio(str(row.get("Player")), name)>70:
+                        # print("FOUND " + str(row.get("Player")))
+                        index = exclude.loc[exclude.Player == name].index.values[0]
+                        exclude.loc[index,"Pk"] = pick
+                        exclude.loc[index,"College"] = row.College.values[0]
+                        found=1
+                        break
+                if found==0:
+                    print("NOT FOUND " + str(row.get("Player")))
+            merged.to_excel("tempmerged.xlsx")
+            exclude.to_excel("all_NCAA_players_" +s_year+ "_draft.xlsx")
+
+def drafted(row):
+    if row['Pk']>0 and row['Pk']<61:
+        val = 1
+    else:
+        val = 0
+    return val
+def pick(row):
+    if row['Drafted'] == 1:
+        if row["Pk"] > 0 and row["Pk"] < 61:
+            return row["Pk"]
+    elif row['NBA'] == 1:
+            return 61
+    return 0
+def first(row):
+    if row["Pk"] > 0 and row["Pk"] < 31:
+        return 1
+    else:
+        return 0
+def second(row):
+    if row["Pk"] > 30 and row["Pk"] < 61:
+        return 1
+    else:
+        return 0
+def lottery(row):
+    if row["Pk"] > 0 and row["Pk"] < 15:
+        return 1
+    else:
+        return 0
+def freeagent(row):
+    if row["Pk"] == 61:
+        return 1
+    return 0
+def isG(row):
+    if row["Pos"] == "G":
+        return 1
+    return 0
+def isF(row):
+    if row["Pos"] == "F":
+        return 1
+    return 0
+def isC(row):
+    if row["Pos"] == "C":
+        return 1
+    return 0
+def fix_column_names(start, end):
+    for year in range(start, end+1):
+        s_year = str(year)
+        curr = pd.read_excel("all_NCAA_players_" + s_year + "_draft.xlsx")
+        curr["Drafted"] = 0
+        if year >2010:
+            try:
+                curr = curr[['Team', 'College', 'Year', 'Player', 'NBA', 'Drafted', 'Pk', 'Pos', 'Height', 'Weight',
+                         'G_x', 'GS_x', 'MP_x', 'FG', 'FGA', 'FG%', '2P', '2PA', '2P%',
+                         '3P', '3PA', '3P%', 'FT', 'FTA', 'FT%', 'ORB', "DRB", 'TRB',
+                         'AST', 'STL', 'BLK', 'TOV', 'PF', 'PTS', 'PER', 'TS%', 'eFG%',
+                         '3PAr', 'FTr', 'PProd','DRB%', 'TRB%', 'AST%', 'STL%', 'BLK%',
+                         'TOV%', 'USG%', 'OWS', 'DWS', 'WS', 'OBPM', 'DBPM', 'BPM']]
+            except Exception as e:
+                print(e)
+        else:
+            try:
+                curr["PER"] = 0
+                curr["OBPM"] = 0
+                curr["DBPM"] = 0
+                curr["BPM"] = 0
+                curr = curr[['Team', 'College', 'Year', 'Player', 'NBA', 'Drafted', 'Pk', 'Pos', 'Height', 'Weight',
+                         'G_x', 'GS_x', 'MP_x', 'FG', 'FGA', 'FG%', '2P', '2PA', '2P%',
+                         '3P', '3PA', '3P%', 'FT', 'FTA', 'FT%', 'ORB', "DRB", 'TRB',
+                         'AST', 'STL', 'BLK', 'TOV', 'PF', 'PTS', 'PER', 'TS%', 'eFG%',
+                         '3PAr', 'FTr', 'PProd','DRB%', 'TRB%', 'AST%', 'STL%', 'BLK%',
+                         'TOV%', 'USG%', 'OWS', 'DWS', 'WS', 'OBPM', 'DBPM', 'BPM']]
+            except Exception as e:
+                print(e)
+        curr["Drafted"] = curr.apply(drafted,axis=1)
+        curr["Pk"] = curr.apply(pick, axis=1)
+        curr["FirstRound"] = curr.apply(first, axis=1)
+        curr["SecondRound"] = curr.apply(second, axis=1)
+        curr["Lottery"] = curr.apply(lottery, axis=1)
+        curr["FreeAgent"] = curr.apply(freeagent, axis=1)
+        curr["isGuard"] = curr.apply(isG, axis=1)
+        curr["isForward"] = curr.apply(isF, axis=1)
+        curr["isCenter"] = curr.apply(isC, axis=1)
+        curr.to_excel("allNCAA_players_" + s_year + "_draft.xlsx")
+
+def append_all_NCAA(start, end):
+    master = pd.read_excel("all_NCAA_players_" + str(start) + "_draft.xlsx")
+    for year in range(start+1,end+1):
+        s_year = str(year)
+        curr = pd.read_excel("all_NCAA_players_" + s_year + "_draft.xlsx")
+        master = master.append(curr)
+    master.to_excel("ALL_NCAA_PLAYERS_FROM_"+ str(start) + ".xlsx")
 
 
-start = 2000
-end = 2018
+def fix_multuple_NBA():
+    master = pd.read_excel("ALL_NCAA_PLAYERS_FROM_2010.xlsx")
+    master["Drafted"] = 0
+    master["Grade"] = 1
+    for i in range(1, len(master)):
+        NBA = master.columns.get_loc('NBA')
+        Drafted = master.columns.get_loc("Drafted")
+        Player = master.columns.get_loc('Player')
+        Grade = master.columns.get_loc('Grade')
+        Team = master.columns.get_loc('Team')
+        Height = master.columns.get_loc('Height')
+        Weight = master.columns.get_loc('Weight')
+        if master.iat[i - 1, Player] == master.iat[i, Player]:
+            master.iat[i - 1, NBA] = 0
+            master.iat[i - 1, Drafted] = 0
+            if master.iat[i - 1, Team] == master.iat[i, Team] or  master.iat[i - 1, Height] == master.iat[i, Height] and master.iat[i - 1, Weight] == master.iat[i, Weight]:
+                master.iat[i, Grade] = master.iat[i-1, Grade]+1
+
+    try:
+        master = master[['Team', 'Year', 'Player', 'Grade', 'NBA', 'Drafted', 'Pk', 'Pos', 'Height', 'Weight',
+                     'G', 'GS', 'MP', 'FG', 'FGA', 'FG%', '2P', '2PA', '2P%',
+                     '3P', '3PA', '3P%', 'FT', 'FTA', 'FT%', 'ORB', "DRB", 'TRB',
+                     'AST', 'STL', 'BLK', 'TOV', 'PF', 'PTS', 'PER', 'TS%', 'eFG%',
+                     '3PAr', 'FTr', 'PProd', 'DRB%', 'TRB%', 'AST%', 'STL%', 'BLK%',
+                     'TOV%', 'USG%', 'OWS', 'DWS', 'WS', 'OBPM', 'DBPM', 'BPM']]
+    except Exception as e:
+        print(e)
+    master["Drafted"] = master.apply(drafted, axis=1)
+    master["Pk"] = master.apply(pick, axis=1)
+    master["FirstRound"] = master.apply(first, axis=1)
+    master["SecondRound"] = master.apply(second, axis=1)
+    master["Lottery"] = master.apply(lottery, axis=1)
+    master["FreeAgent"] = master.apply(freeagent, axis=1)
+    master["isGuard"] = master.apply(isG, axis=1)
+    master["isForward"] = master.apply(isF, axis=1)
+    master["isCenter"] = master.apply(isC, axis=1)
+    master.to_excel('ALL_NCAA_PLAYERS_FROM_2010_2018.xlsx')
+
+
+start = 2010
+end = 2010
 
 # # First make the master sheets
 # multiple_masters(start, end)
@@ -502,3 +664,8 @@ end = 2018
 # get_nba_players(start, end)
 # make_NCAA_master_roster(start, end)
 # add_combine()
+
+# add_draft_pos(start, end)
+# fix_column_names(start,end)
+# append_all_NCAA(start, end)
+fix_multuple_NBA()

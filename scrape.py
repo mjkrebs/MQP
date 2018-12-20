@@ -718,23 +718,6 @@ def pull_master_ncaa_data(start, end):
         master.to_excel("all_NCAA_players_zz" + s_year + ".xlsx")
     return
 
-def fix_column_names(start, end):
-    for year in range(start, end+1):
-        s_year = str(year)
-        curr = pd.read_excel("all_NCAA_players_" + s_year + ".xlsx")
-        # curr = curr[['Team', 'Year', 'Player', 'NBA', 'Pos', 'Height', 'Weight',
-        #              'G_x', 'GS_x', 'MP_x', 'FG', 'FGA', 'FG%', '2P', '2PA', '2P%',
-        #              '3P', '3PA', '3P%', 'FT', 'FTA', 'FT%', 'ORB', "DRB", 'TRB',
-        #              'AST', 'STL', 'BLK', 'TOV', 'PF', 'PTS', 'G_y', 'GS_y', 'MP_y',
-        #              'PER', 'TS%', 'eFG%', '3PAr', 'FTr', 'PProd','DRB%', 'TRB%',
-        #              'AST%', 'STL%', 'BLK%', 'TOV%', 'USG%', ' ', 'OWS', 'DWS', 'WS',
-        #              ' .1', 'OBPM', 'DBPM', 'BPM']]
-
-        curr.__delitem__(" ")
-        curr.__delitem__(" .1")
-        curr.to_excel("all_NCAA_players_" + s_year + ".xlsx")
-
-
 def append_ncaa(start, end):
     first = pd.read_excel("all_NCAA_players_zz" + str(start) + ".xlsx")
     for year in range(start + 1,end+1):
