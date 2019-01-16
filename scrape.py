@@ -718,24 +718,13 @@ def pull_master_ncaa_data(start, end):
         master.to_excel("all_NCAA_players_zz" + s_year + ".xlsx")
     return
 
-def fix_column_names(start, end):
-    for year in range(start, end+1):
+def append_ncaa(start, end):
+    first = pd.read_excel("all_NCAA_players_zz" + str(start) + ".xlsx")
+    for year in range(start + 1,end+1):
         s_year = str(year)
-        curr = pd.read_excel("all_NCAA_players_" + s_year + ".xlsx")
-        # curr = curr[['Team', 'Year', 'Player', 'NBA', 'Pos', 'Height', 'Weight',
-        #              'G_x', 'GS_x', 'MP_x', 'FG', 'FGA', 'FG%', '2P', '2PA', '2P%',
-        #              '3P', '3PA', '3P%', 'FT', 'FTA', 'FT%', 'ORB', "DRB", 'TRB',
-        #              'AST', 'STL', 'BLK', 'TOV', 'PF', 'PTS', 'G_y', 'GS_y', 'MP_y',
-        #              'PER', 'TS%', 'eFG%', '3PAr', 'FTr', 'PProd','DRB%', 'TRB%',
-        #              'AST%', 'STL%', 'BLK%', 'TOV%', 'USG%', ' ', 'OWS', 'DWS', 'WS',
-        #              ' .1', 'OBPM', 'DBPM', 'BPM']]
-
-        curr.__delitem__(" ")
-        curr.__delitem__(" .1")
-        curr.to_excel("all_NCAA_players_" + s_year + ".xlsx")
-
-
-
+        curr = pd.read_excel("all_NCAA_players_zz" + s_year + ".xlsx")
+        first = first.append(curr)
+    first.to_excel("all_NCAA_test.xlsx")
 
 
 start = time.time()
@@ -767,8 +756,9 @@ end_year = 2018
 # for some reason agility 16-17 isnt loading, try again and place it in between tables where added break lines are
 # pull_combine_stats()
 
-pull_master_ncaa_data(start_year, end_year)
+# pull_master_ncaa_data(start_year, end_year)
 # fix_column_names(2000,2000)
+append_ncaa(2015,2018)
 end = time.time()
 print(end-start)
 
