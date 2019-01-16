@@ -12,7 +12,8 @@ from sklearn.model_selection import GridSearchCV
 from sklearn import preprocessing
 
 
-df = pd.read_excel("Forwards_2015_2018.xlsx")
+df = pd.read_excel("all_NCAA_2015_2018.xlsx")
+
 
 #this little code snippet removes all seasons for players that aren't their last. It makes sense that we're trying to predict whether or not
 #a 'season' will make the NBA and the player going back for another year of school adds unnecessary noise into the data. 
@@ -41,6 +42,7 @@ firstRound = df.pop('FirstRound').values
 secondRound = df.pop('SecondRound').values
 lotteryPick = df.pop('Lottery').values
 
+colnames = df.columns.values
 #Need to normalize the data!!!
 min_max_scaler = preprocessing.MinMaxScaler()
 np_scaled = min_max_scaler.fit_transform(df)
@@ -90,9 +92,21 @@ cnn = MLPClassifier(learning_rate='adaptive',batch_size=400,activation='relu',hi
 cnn.fit(X_train,y_train)
 cnn_predictions = cnn.predict(X_test)
 
+
 print("Metrics for: " + targetString)
 print("Logistic Regression")
 print(classification_report(y_test, logreg_predictions, target_names =['No NBA', 'Made NBA']))
+coefs = logreg.coef_[0]
+indices = np.argsort(coefs)
+coefs.sort()
+
+for i in range(0,len(indices)):
+	print(colnames[indices[i]])
+	print(coefs[i])
+
+
+
+
 print("Decision Tree")
 print(classification_report(y_test, dtree_predictions, target_names =['No NBA', 'Made NBA']))
 print("Random Forest")
@@ -107,7 +121,7 @@ master_df = pd.read_excel("all_NCAA_2015_2018.xlsx")
 misclassified_samples = X_test[y_test != logreg_predictions]
 
 #for each misclassified row, find the corresponding name in the master dataframe
-print(misclassified_samples)
+#print(misclassified_samples)
 #for row in misclassified_samples:
 
 
