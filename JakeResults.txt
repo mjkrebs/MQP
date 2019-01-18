@@ -1,0 +1,208 @@
+Metrics for: madeNBA
+Logistic Regression
+             precision    recall  f1-score   support
+
+     No NBA       0.99      1.00      1.00      3199
+   Made NBA       0.79      0.51      0.62        43
+
+avg / total       0.99      0.99      0.99      3242
+
+Decision Tree
+             precision    recall  f1-score   support
+
+     No NBA       0.99      0.99      0.99      3199
+   Made NBA       0.36      0.30      0.33        43
+
+avg / total       0.98      0.98      0.98      3242
+
+Random Forest
+             precision    recall  f1-score   support
+
+     No NBA       0.99      1.00      0.99      3199
+   Made NBA       1.00      0.09      0.17        43
+
+avg / total       0.99      0.99      0.98      3242
+
+Multilayer Perceptron
+             precision    recall  f1-score   support
+
+     No NBA       0.99      1.00      1.00      3199
+   Made NBA       0.82      0.42      0.55        43
+
+avg / total       0.99      0.99      0.99      3242
+______________________________________________________________________________________
+
+Metrics for: wasDrafted
+Logistic Regression
+             precision    recall  f1-score   support
+
+     No NBA       0.99      1.00      0.99      3206
+   Made NBA       0.56      0.39      0.46        36
+
+avg / total       0.99      0.99      0.99      3242
+
+Decision Tree
+             precision    recall  f1-score   support
+
+     No NBA       0.99      0.99      0.99      3206
+   Made NBA       0.28      0.28      0.28        36
+
+avg / total       0.98      0.98      0.98      3242
+
+Random Forest
+             precision    recall  f1-score   support
+
+     No NBA       0.99      1.00      1.00      3206
+   Made NBA       0.86      0.17      0.28        36
+
+avg / total       0.99      0.99      0.99      3242
+
+Multilayer Perceptron
+     No NBA       0.99      1.00      0.99      3206
+   Made NBA       0.00      0.00      0.00        36
+
+avg / total       0.98      0.99      0.98      3242
+
+_________________________________________________________________________________________
+
+Metrics for: firstRound
+Logistic Regression
+             precision    recall  f1-score   support
+
+     No NBA       1.00      1.00      1.00      3222
+   Made NBA       0.60      0.30      0.40        20
+
+avg / total       0.99      0.99      0.99      3242
+
+Decision Tree
+             precision    recall  f1-score   support
+
+     No NBA       1.00      1.00      1.00      3222
+   Made NBA       0.57      0.20      0.30        20
+
+avg / total       0.99      0.99      0.99      3242
+
+Random Forest
+             precision    recall  f1-score   support
+
+     No NBA       0.99      1.00      1.00      3222
+   Made NBA       0.67      0.10      0.17        20
+
+avg / total       0.99      0.99      0.99      3242
+
+Multilayer Perceptron
+             precision    recall  f1-score   support
+
+     No NBA       0.00      0.00      0.00      3222
+   Made NBA       0.01      1.00      0.01        20
+
+avg / total       0.00      0.01      0.00      3242
+
+___________________________________________________________________________________________
+
+Metrics for: lotteryPick
+Logistic Regression
+             precision    recall  f1-score   support
+
+     No NBA       1.00      1.00      1.00      3233
+   Made NBA       0.50      0.22      0.31         9
+
+avg / total       1.00      1.00      1.00      3242
+
+Decision Tree
+             precision    recall  f1-score   support
+
+     No NBA       1.00      1.00      1.00      3233
+   Made NBA       0.44      0.44      0.44         9
+
+avg / total       1.00      1.00      1.00      3242
+
+Random Forest
+             precision    recall  f1-score   support
+
+     No NBA       1.00      1.00      1.00      3233
+   Made NBA       0.00      0.00      0.00         9
+
+avg / total       0.99      1.00      1.00      3242
+
+Multilayer Perceptron
+             precision    recall  f1-score   support
+
+     No NBA       1.00      1.00      1.00      3233
+   Made NBA       1.00      0.33      0.50         9
+
+avg / total       1.00      1.00      1.00      3242
+
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+GUARDS ONLY 
+
+Metrics for: madeNBA
+Logistic Regression
+             precision    recall  f1-score   support
+
+     No NBA       1.00      1.00      1.00      2159
+   Made NBA       0.76      0.57      0.65        23
+
+avg / total       0.99      0.99      0.99      2182
+
+Decision Tree
+             precision    recall  f1-score   support
+
+     No NBA       0.99      1.00      1.00      2159
+   Made NBA       0.60      0.52      0.56        23
+
+avg / total       0.99      0.99      0.99      2182
+
+Random Forest
+             precision    recall  f1-score   support
+
+     No NBA       0.99      1.00      1.00      2159
+   Made NBA       1.00      0.09      0.16        23
+
+avg / total       0.99      0.99      0.99      2182
+
+Multilayer Perceptron
+             precision    recall  f1-score   support
+
+     No NBA       0.99      1.00      1.00      2159
+   Made NBA       0.92      0.48      0.63        23
+
+avg / total       0.99      0.99      0.99      2182
+
+FORWARDS ONLY
+
+Metrics for: madeNBA
+Logistic Regression
+             precision    recall  f1-score   support
+
+     No NBA       0.99      1.00      0.99      1359
+   Made NBA       0.80      0.40      0.53        20
+
+avg / total       0.99      0.99      0.99      1379
+
+Decision Tree
+             precision    recall  f1-score   support
+
+     No NBA       0.99      0.99      0.99      1359
+   Made NBA       0.47      0.35      0.40        20
+
+avg / total       0.98      0.98      0.98      1379
+
+Random Forest
+             precision    recall  f1-score   support
+
+     No NBA       0.99      1.00      0.99      1359
+   Made NBA       0.67      0.10      0.17        20
+
+avg / total       0.98      0.99      0.98      1379
+
+Multilayer Perceptron
+             precision    recall  f1-score   support
+
+     No NBA       0.99      1.00      0.99      1359
+   Made NBA       1.00      0.15      0.26        20
+
+avg / total       0.99      0.99      0.98      1379
+

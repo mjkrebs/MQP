@@ -1,6 +1,5 @@
-import numpy as np 
+import numpy as np
 import pandas as pd
-import sys
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
@@ -10,102 +9,107 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.neural_network import MLPClassifier
 
-df_list = list()
-
-# for x in range(2015,2019):
-# 	df = pd.read_excel("all_NCAA_players_"+str(x) + ".xlsx")
-# 	drop Pos as already added dummies in Excel
-	# df = df.drop(columns = ['Pos'])
-	# Drop the irrelevant ID variables
-	# df = df.drop(columns = ['Player','Year'])
-	# Concatenate the dataframe without the team variable with the dataframe which has the dummy variables for the team
-	# df = pd.concat([df.drop('Team',axis=1), pd.get_dummies(df['Team'])],axis=1)
-	# df_list.append(df)
+from sklearn.model_selection import GridSearchCV
+from sklearn import preprocessing
 
 
+df = pd.read_excel("Forwards_2015_2018.xlsx")
 
-result = pd.read_excel("all_NCAA_2015_2018.xlsx")
-# result = pd.read_excel("Forwards_2015_2018.xlsx")
+#this little code snippet removes all seasons for players that aren't their last. It makes sense that we're trying to predict whether or not
+#a 'season' will make the NBA and the player going back for another year of school adds unnecessary noise into the data. 
+i = 0
+print (len(df.index))
+for row in df.itertuples(name='Pandas',index=True):
+	if(i+1 == len(df.index)):
+		break
+	nextrow = df.iloc[i+1]
+	rowname = getattr(row,'Player')
+	nextrowname = getattr(nextrow,'Player')
+	rowindex = row[0]
+	i += 1
+	if(rowname == nextrowname):
+		df = df.drop(rowindex,axis='index')
+print(len(df.index))		
 
-# result = pd.concat(df_list)
-keepresult = result
-result = result.drop(['Player','Year', 'DraftPos'], axis=1)
-result = pd.get_dummies(result, columns = ["Team", "Pos"] )
+df = df.drop(columns = ['Player','Year'])
+df = pd.concat([df.drop('Team',axis=1), pd.get_dummies(df['Team'])],axis=1)
+df = pd.concat([df.drop('Pos',axis = 1), pd.get_dummies(df['Pos'])],axis =1)
 
-# sys.stdout = open('outputs.txt', 'w')
-test = ""
-for i in range(0,1):
-    if i==0:
-        test = "NBA"
-        curr = result.drop(['Drafted', 'FirstRound', 'SecondRound', 'Lottery', 'FreeAgent'], axis=1)
-    elif i==1:
-        test="Drafted"
-        curr = result.drop(['NBA', 'FirstRound', 'SecondRound', 'Lottery', 'FreeAgent'], axis=1)
-    elif i==2:
-        test="FirstRound"
-        curr = result.drop(['Drafted', 'NBA', 'SecondRound', 'Lottery', 'FreeAgent'], axis=1)
-    elif i==3:
-        test="SecondRound"
-        curr = result.drop(['Drafted', 'FirstRound', 'NBA', 'Lottery', 'FreeAgent'], axis=1)
-    elif i==4:
-        test="Lottery"
-        curr = result.drop(['Drafted', 'FirstRound', 'SecondRound', 'NBA', 'FreeAgent'], axis=1)
-    elif i==5:
-        test = "FreeAgent"
-        curr = result.drop(['Drafted', 'FirstRound', 'SecondRound', 'Lottery', 'NBA'], axis=1)
-    print("\n\n" + test)
-    y = curr.pop(test).values
-    X = curr.values
+madeNBA = df.pop('NBA').values
+wasDrafted = df.pop('Drafted').values
+draftPosition = df.pop('DraftPos').values
+firstRound = df.pop('FirstRound').values
+secondRound = df.pop('SecondRound').values
+lotteryPick = df.pop('Lottery').values
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.30)
+#Need to normalize the data!!!
+min_max_scaler = preprocessing.MinMaxScaler()
+np_scaled = min_max_scaler.fit_transform(df)
+df = pd.DataFrame(np_scaled)
 
-    scaler = StandardScaler()
-    scaler.fit(X_train)
-    X_train = scaler.transform(X_train)
-    X_test = scaler.transform(X_test)
+result = df
 
-    logreg = LogisticRegression().fit(X_train, y_train)
-    logreg_predictions = logreg.predict(X_test)
+# ---HERE, CHOOSE WHAT YOU WANT TO PREDICT ---
+# ---OPTIONS ARE: madeNBA, wasDrafted, firstRound, secondRound, lotteryPick
+# ---draftPosition will need a regression & not classification!!!---
+target = madeNBA
+targetString = ""
 
+if np.array_equal(target,madeNBA):
+	targetString = "madeNBA"
+elif np.array_equal(target,wasDrafted):
+	targetString = "wasDrafted"
+elif np.array_equal(target,firstRound):
+	targetString = "firstRound"
+elif np.array_equal(target,secondRound):
+	targetString = "secondRound"
+elif np.array_equal(target,lotteryPick):
+	targetString = "lotteryPick"
 
-    dtree = DecisionTreeClassifier().fit(X_train,y_train)
-    dtree_predictions = dtree.predict(X_test)
+y = target
+X = result.values
 
-    rfor = RandomForestClassifier(n_estimators=100).fit(X_train,y_train)
-    rfor_predictions = rfor.predict(X_test)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, stratify=y, random_state=42)
 
-    cnn = MLPClassifier().fit(X_train,y_train)
-    cnn_predictions = cnn.predict(X_test)
+scaler = StandardScaler()
+scaler.fit(X_train)
+X_train = scaler.transform(X_train)
+X_test = scaler.transform(X_test)
+
+logreg = LogisticRegression().fit(X_train, y_train)
+logreg_predictions = logreg.predict(X_test)
 
 
+dtree = DecisionTreeClassifier().fit(X_train,y_train)
+dtree_predictions = dtree.predict(X_test)
+
+rfor = RandomForestClassifier(n_estimators=100).fit(X_train,y_train)
+rfor_predictions = rfor.predict(X_test)
 
 
-    if i==0:
-        t_names = ['No NBA', 'Made NBA']
-    elif i==1:
-        t_names = ['Not Drafted', 'Drafted']
-    elif i==2:
-        t_names = ['Not FirstRound', 'Made FirstRound']
-    elif i==3:
-        t_names = ['Not SecondRound', 'Made SecondRound']
-    elif i==4:
-        t_names = ['Not Lottery', 'Lottery']
-    elif i==5:
-        t_names = ['Not Free Agent', 'Free Agent']
-    print("Logistic Regression")
-    print(classification_report(y_test, logreg_predictions, target_names =t_names))
-    # print("Decision Tree")
-    # print(classification_report(y_test, dtree_predictions, target_names =t_names))
-    # print("Random Forest")
-    # print(classification_report(y_test, rfor_predictions, target_names =t_names))
-    print("Multilayer Perceptron")
-    print(classification_report(y_test, cnn_predictions, target_names =t_names))
+cnn = MLPClassifier(learning_rate='adaptive',batch_size=400,activation='relu',hidden_layer_sizes=[100,80,60,40,20,2],max_iter=10)
+cnn.fit(X_train,y_train)
+cnn_predictions = cnn.predict(X_test)
 
-    # print(logreg.coef_)
-    print("====================================================================\n====================================================================")
+print("Metrics for: " + targetString)
+print("Logistic Regression")
+print(classification_report(y_test, logreg_predictions, target_names =['No NBA', 'Made NBA']))
+print("Decision Tree")
+print(classification_report(y_test, dtree_predictions, target_names =['No NBA', 'Made NBA']))
+print("Random Forest")
+print(classification_report(y_test, rfor_predictions, target_names =['No NBA', 'Made NBA']))
+print("Multilayer Perceptron")
+print(classification_report(y_test, cnn_predictions, target_names =['No NBA', 'Made NBA']))
 
 
 
+master_df = pd.read_excel("all_NCAA_2015_2018.xlsx")
+
+misclassified_samples = X_test[y_test != logreg_predictions]
+
+#for each misclassified row, find the corresponding name in the master dataframe
+print(misclassified_samples)
+#for row in misclassified_samples:
 
 
 
