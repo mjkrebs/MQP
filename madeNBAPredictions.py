@@ -28,6 +28,7 @@ result = pd.read_excel("all_NCAA_2015_2018.xlsx")
 # result = pd.read_excel("Forwards_2015_2018.xlsx")
 
 # result = pd.concat(df_list)
+keepresult = result
 result = result.drop(['Player','Year', 'DraftPos'], axis=1)
 result = pd.get_dummies(result, columns = ["Team", "Pos"] )
 
@@ -75,6 +76,8 @@ for i in range(0,1):
 
     cnn = MLPClassifier().fit(X_train,y_train)
     cnn_predictions = cnn.predict(X_test)
+
+
 
 
     if i==0:
