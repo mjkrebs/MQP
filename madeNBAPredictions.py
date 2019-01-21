@@ -12,12 +12,12 @@ from sklearn.model_selection import GridSearchCV
 from sklearn import preprocessing
 
 
-df = pd.read_excel("all_NCAA_PLAYERS_FROM_2010_2018.xlsx")
+df = pd.read_excel("NCAA/NCAA_Freshmen_2012_Forward.xlsx")
 
 
 #this little code snippet removes all seasons for players that aren't their last. It makes sense that we're trying to predict whether or not
 #a 'season' will make the NBA and the player going back for another year of school adds unnecessary noise into the data. 
-
+"""
 i = 0
 print (len(df.index))
 for row in df.itertuples(name='Pandas',index=True):
@@ -31,10 +31,10 @@ for row in df.itertuples(name='Pandas',index=True):
 	if(rowname == nextrowname):
 		df = df.drop(rowindex,axis='index')
 print(len(df.index))		
-
+"""
 
 #FRESHMEN ONLY
-#df = df.loc[df['Grade'] == 1]
+df = df.loc[df['Grade'] == 1]
 
 
 masterframe = df
@@ -90,6 +90,7 @@ logreg = LogisticRegression().fit(X_train, y_train)
 logreg_predictions = logreg.predict(X_test)
 logreg_proba = logreg.predict_proba(X_test)
 
+"""
 dtree = DecisionTreeClassifier().fit(X_train,y_train)
 dtree_predictions = dtree.predict(X_test)
 
@@ -97,10 +98,10 @@ rfor = RandomForestClassifier(n_estimators=100).fit(X_train,y_train)
 rfor_predictions = rfor.predict(X_test)
 
 
-cnn = MLPClassifier(learning_rate='adaptive',batch_size=400,activation='relu',hidden_layer_sizes=[100,80,60,40,20,2],max_iter=100)
+cnn = MLPClassifier(learning_rate='adaptive',batch_size=400,activation='relu',hidden_layer_sizes =[1000,800,600,400,200,100,80,60,40,20,2],max_iter=1000)
 cnn.fit(X_train,y_train)
 cnn_predictions = cnn.predict(X_test)
-
+"""
 
 print("Metrics for: " + targetString)
 print("Logistic Regression")
@@ -116,13 +117,14 @@ for i in range(0,len(indices)):
 	print(coefs[i])
 """
 
+"""
 print("Decision Tree")
 print(classification_report(y_test, dtree_predictions, target_names =['No NBA', 'Made NBA']))
 print("Random Forest")
 print(classification_report(y_test, rfor_predictions, target_names =['No NBA', 'Made NBA']))
 print("Multilayer Perceptron")
 print(classification_report(y_test, cnn_predictions, target_names =['No NBA', 'Made NBA']))
-
+"""
 
 #for each misclassified row, find the corresponding name in the master dataframe
 #print(misclassified_samples)
