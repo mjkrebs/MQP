@@ -596,7 +596,7 @@ def append_all_NCAA(start, end):
 
 
 def fix_multuple_NBA():
-    master = pd.read_excel("ALL_NCAA_PLAYERS_FROM_2010.xlsx")
+    master = pd.read_excel("ALL_NCAA_PLAYERS_FROM_2011.xlsx")
     master["Drafted"] = 0
     master["Grade"] = 1
     for i in range(1, len(master)):
@@ -631,11 +631,10 @@ def fix_multuple_NBA():
     master["isGuard"] = master.apply(isG, axis=1)
     master["isForward"] = master.apply(isF, axis=1)
     master["isCenter"] = master.apply(isC, axis=1)
-    master.to_excel('ALL_NCAA_PLAYERS_FROM_2010_2018.xlsx')
+    master.to_excel('ALL_NCAA_PLAYERS_FROM_2011.xlsx')
 
-
-start = 2010
-end = 2010
+start = 2011
+end = 2018
 
 # # First make the master sheets
 # multiple_masters(start, end)
@@ -666,6 +665,6 @@ end = 2010
 # add_combine()
 
 # add_draft_pos(start, end)
-# fix_column_names(start,end)
+# fix_column_names(2018,2018)
 # append_all_NCAA(start, end)
-fix_multuple_NBA()
+# fix_multuple_NBA()
