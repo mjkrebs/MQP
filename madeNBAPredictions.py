@@ -38,7 +38,9 @@ df = df.loc[df['Grade'] == 1]
 
 
 masterframe = df
-df = df.drop(columns = ['Year','Pos','FreeAgent'])
+
+
+df = df.drop(['Year','Pos','FreeAgent'], axis=1)
 df = pd.concat([df.drop('Team',axis=1), pd.get_dummies(df['Team'])],axis=1)
 
 
@@ -146,4 +148,10 @@ for index, row in frame.iterrows():
 	player = player.loc[player['FGA'] == fga]
 	player = player.loc[player['PProd'] == pprod]
 	print(player['Player'].values + ": " + str(probs[index]) + " Year: " + player['Year'].values + " Predicted: " + str(prediction[index]) + " Actual: " + str(actuals[index]))
-	
+
+
+allprobs = pd.DataFrame(logreg_proba)
+allprobs.columns = ["MissedPercent", "MadePercent"]
+allprobs["actual"] = y_test
+allprobs["predicted"] = logreg_predictions
+allprobs.to_excel("tester.xlsx")
