@@ -154,4 +154,4 @@ allprobs = pd.DataFrame(logreg_proba)
 allprobs.columns = ["MissedPercent", "MadePercent"]
 allprobs["actual"] = y_test
 allprobs["predicted"] = logreg_predictions
-allprobs.to_excel("tester.xlsx")
+# allprobs.to_excel("tester.xlsx")
