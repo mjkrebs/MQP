@@ -79,7 +79,7 @@ elif np.array_equal(target,lotteryPick):
 y = target
 X = result.values
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, stratify=y, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, stratify=y, random_state = 42)
 
 X_test_normal = X_test
 
@@ -108,7 +108,10 @@ cnn_predictions = cnn.predict(X_test)
 print("Metrics for: " + targetString)
 print("Logistic Regression")
 print(classification_report(y_test, logreg_predictions, target_names =['No NBA', 'Made NBA']))
-"""
+
+
+#code to display coefficients
+
 coefs = logreg.coef_[0]
 indices = np.argsort(coefs)
 coefs.sort()
@@ -117,7 +120,10 @@ coefs.sort()
 for i in range(0,len(indices)):
 	print(colnames[indices[i]])
 	print(coefs[i])
-"""
+
+
+
+
 
 """
 print("Decision Tree")
@@ -155,3 +161,6 @@ allprobs.columns = ["MissedPercent", "MadePercent"]
 allprobs["actual"] = y_test
 allprobs["predicted"] = logreg_predictions
 # allprobs.to_excel("tester.xlsx")
+
+print(player['Player'].values + ": " + str(probs[index]) + " Pos: " + player['Pos'].values +  " Height: " + str(player['Height'].values) + " School: " + player['Team'].values + " Year: " + player['Year'].values + " Predicted: " + str(prediction[index]) + " Actual: " + str(actuals[index]))
+
