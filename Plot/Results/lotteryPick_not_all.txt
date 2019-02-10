@@ -1,0 +1,4 @@
+['Grayson Allen']: [0.18253429 0.81746571] Year: ['2015-16'] Predicted: 1 Actual: 0
+['Delon Wright']: [0.38122682 0.61877318] Year: ['2013-14'] Predicted: 1 Actual: 0
+['Christian Wood']: [0.48931683 0.51068317] Year: ['2014-15'] Predicted: 1 Actual: 0
+['Willie Cauley-Stein']: [0.48618662 0.51381338] Year: ['2012-13'] Predicted: 1 Actual: 0

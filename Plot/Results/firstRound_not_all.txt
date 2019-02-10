@@ -1,0 +1,6 @@
+['Willie Cauley-Stein']: [0.28217511 0.71782489] Year: ['2012-13'] Predicted: 1 Actual: 0
+['Aaron Harrison']: [0.49615769 0.50384231] Year: ['2013-14'] Predicted: 1 Actual: 0
+['Cody Zeller']: [0.09456661 0.90543339] Year: ['2011-12'] Predicted: 1 Actual: 0
+['Miles Bridges']: [0.28698649 0.71301351] Year: ['2016-17'] Predicted: 1 Actual: 0
+['Davon Usher']: [0.18927514 0.81072486] Year: ['2013-14'] Predicted: 1 Actual: 0
+['Kris Dunn']: [0.49213405 0.50786595] Year: ['2014-15'] Predicted: 1 Actual: 0

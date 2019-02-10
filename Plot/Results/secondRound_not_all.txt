@@ -1,0 +1,5 @@
+['Kendrick Nunn']: [0.43829085 0.56170915] Year: ['2017-18'] Predicted: 1 Actual: 0
+['Justin Jackson']: [0.48521931 0.51478069] Year: ['2016-17'] Predicted: 1 Actual: 0
+['Anthony Davis']: [0.04714942 0.95285058] Year: ['2011-12'] Predicted: 1 Actual: 0
+['Denzel Valentine']: [0.11808551 0.88191449] Year: ['2015-16'] Predicted: 1 Actual: 0
+['Christian Wood']: [0.38238944 0.61761056] Year: ['2014-15'] Predicted: 1 Actual: 0

@@ -1,0 +1,11 @@
+['Marcus Smart']: [0.11854442 0.88145558] Year: ['2012-13'] Predicted: 1 Actual: 0
+['Kris Dunn']: [0.24624613 0.75375387] Year: ['2014-15'] Predicted: 1 Actual: 0
+['Alec Peters']: [0.17271006 0.82728994] Year: ['2015-16'] Predicted: 1 Actual: 0
+['Denzel Valentine']: [0.48028705 0.51971295] Year: ['2014-15'] Predicted: 1 Actual: 0
+['Delon Wright']: [0.04595094 0.95404906] Year: ['2013-14'] Predicted: 1 Actual: 0
+['Alec Peters']: [0.41132843 0.58867157] Year: ['2014-15'] Predicted: 1 Actual: 0
+['Daniel Hamilton']: [0.4279648 0.5720352] Year: ['2014-15'] Predicted: 1 Actual: 0
+['Montrezl Harrell']: [0.28067373 0.71932627] Year: ['2013-14'] Predicted: 1 Actual: 0
+['Johnathan Motley']: [0.23343748 0.76656252] Year: ['2016-17'] Predicted: 1 Actual: 0
+['Kyle Anderson']: [0.14843632 0.85156368] Year: ['2012-13'] Predicted: 1 Actual: 0
+['Josh Scott']: [0.47482295 0.52517705] Year: ['2015-16'] Predicted: 1 Actual: 0

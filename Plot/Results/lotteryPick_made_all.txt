@@ -1,0 +1,9 @@
+['Mikal Bridges']: [0.96558448 0.03441552] Year: ['2017-18'] Predicted: 0 Actual: 1
+['Shabazz Muhammad']: [0.99763767 0.00236233] Year: ['2012-13'] Predicted: 0 Actual: 1
+['T.J. Warren']: [0.83916831 0.16083169] Year: ['2013-14'] Predicted: 0 Actual: 1
+['Donovan Mitchell']: [0.9965779 0.0034221] Year: ['2016-17'] Predicted: 0 Actual: 1
+['Stanley Johnson']: [0.5905313 0.4094687] Year: ['2014-15'] Predicted: 0 Actual: 1
+['Bradley Beal']: [0.98859619 0.01140381] Year: ['2011-12'] Predicted: 0 Actual: 1
+['Andre Drummond']: [0.99899808 0.00100192] Year: ['2011-12'] Predicted: 0 Actual: 1
+['Zach LaVine']: [0.99877976 0.00122024] Year: ['2013-14'] Predicted: 0 Actual: 1
+['Dennis Smith Jr.']: [0.95401249 0.04598751] Year: ['2016-17'] Predicted: 0 Actual: 1

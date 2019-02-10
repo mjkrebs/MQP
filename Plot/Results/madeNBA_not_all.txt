@@ -1,0 +1,13 @@
+['Bryce Alford']: [0.35869038 0.64130962] Year: ['2014-15'] Predicted: 1 Actual: 0
+['Kyle Anderson']: [0.11380695 0.88619305] Year: ['2012-13'] Predicted: 1 Actual: 0
+['Juwan Morgan']: [0.41439143 0.58560857] Year: ['2017-18'] Predicted: 1 Actual: 0
+['Antonio Campbell']: [0.4857833 0.5142167] Year: ['2015-16'] Predicted: 1 Actual: 0
+['Miles Bridges']: [0.18408183 0.81591817] Year: ['2016-17'] Predicted: 1 Actual: 0
+['Jameel Warney']: [0.33946755 0.66053245] Year: ['2014-15'] Predicted: 1 Actual: 0
+['Jontay Porter']: [0.28398074 0.71601926] Year: ['2017-18'] Predicted: 1 Actual: 0
+['Tyrone Wallace']: [0.3362947 0.6637053] Year: ['2014-15'] Predicted: 1 Actual: 0
+['Ivan Rabb']: [0.44508033 0.55491967] Year: ['2015-16'] Predicted: 1 Actual: 0
+['Bryce Alford']: [0.45246367 0.54753633] Year: ['2015-16'] Predicted: 1 Actual: 0
+['Kyle Wiltjer']: [0.44865029 0.55134971] Year: ['2014-15'] Predicted: 1 Actual: 0
+['Grayson Allen']: [0.0298221 0.9701779] Year: ['2015-16'] Predicted: 1 Actual: 0
+['Willie Cauley-Stein']: [0.2762364 0.7237636] Year: ['2012-13'] Predicted: 1 Actual: 0

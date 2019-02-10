@@ -33,8 +33,10 @@ for row in df.itertuples(name='Pandas',index=True):
 print(len(df.index))		
 """
 
+
+
 #FRESHMEN ONLY
-df = df.loc[df['Grade'] == 1]
+# df = df.loc[df['Grade'] == 1]
 
 
 masterframe = df
@@ -62,7 +64,7 @@ result = df
 # ---HERE, CHOOSE WHAT YOU WANT TO PREDICT ---
 # ---OPTIONS ARE: madeNBA, wasDrafted, firstRound, secondRound, lotteryPick
 # ---draftPosition will need a regression & not classification!!!---
-target = madeNBA
+target = secondRound
 targetString = ""
 
 if np.array_equal(target,madeNBA):
@@ -92,7 +94,7 @@ logreg = LogisticRegression().fit(X_train, y_train)
 logreg_predictions = logreg.predict(X_test)
 logreg_proba = logreg.predict_proba(X_test)
 
-"""
+'''
 dtree = DecisionTreeClassifier().fit(X_train,y_train)
 dtree_predictions = dtree.predict(X_test)
 
@@ -103,11 +105,20 @@ rfor_predictions = rfor.predict(X_test)
 cnn = MLPClassifier(learning_rate='adaptive',batch_size=400,activation='relu',hidden_layer_sizes =[1000,800,600,400,200,100,80,60,40,20,2],max_iter=1000)
 cnn.fit(X_train,y_train)
 cnn_predictions = cnn.predict(X_test)
-"""
+'''
 
 print("Metrics for: " + targetString)
 print("Logistic Regression")
-print(classification_report(y_test, logreg_predictions, target_names =['No NBA', 'Made NBA']))
+if np.array_equal(target,madeNBA):
+	print(classification_report(y_test, logreg_predictions, target_names=['No NBA', 'Made NBA']))
+elif np.array_equal(target,wasDrafted):
+	print(classification_report(y_test, logreg_predictions, target_names=['Not Drafted', 'Drafted']))
+elif np.array_equal(target,firstRound):
+	print(classification_report(y_test, logreg_predictions, target_names=['Not First Round', 'First Round']))
+elif np.array_equal(target,secondRound):
+	print(classification_report(y_test, logreg_predictions, target_names=['Not Second Round', 'Second Round']))
+elif np.array_equal(target,lotteryPick):
+	print(classification_report(y_test, logreg_predictions, target_names=['Not Lottery', 'Lottery']))
 
 
 #code to display coefficients
@@ -117,22 +128,21 @@ indices = np.argsort(coefs)
 coefs.sort()
 
 
-for i in range(0,len(indices)):
-	print(colnames[indices[i]])
-	print(coefs[i])
+# for i in range(0,len(indices)):
+	# print(colnames[indices[i]])
+	# print(coefs[i])
 
 
 
 
 
-"""
-print("Decision Tree")
-print(classification_report(y_test, dtree_predictions, target_names =['No NBA', 'Made NBA']))
-print("Random Forest")
-print(classification_report(y_test, rfor_predictions, target_names =['No NBA', 'Made NBA']))
-print("Multilayer Perceptron")
-print(classification_report(y_test, cnn_predictions, target_names =['No NBA', 'Made NBA']))
-"""
+# print("Decision Tree")
+# print(classification_report(y_test, dtree_predictions, target_names =['No NBA', 'Made NBA']))
+# print("Random Forest")
+# print(classification_report(y_test, rfor_predictions, target_names =['No NBA', 'Made NBA']))
+# print("Multilayer Perceptron")
+# print(classification_report(y_test, cnn_predictions, target_names =['No NBA', 'Made NBA']))
+
 
 #for each misclassified row, find the corresponding name in the master dataframe
 #print(misclassified_samples)
@@ -143,8 +153,10 @@ actuals = y_test[y_test != logreg_predictions]
 array = X_test_normal[y_test != logreg_predictions]
 frame = pd.DataFrame(columns = colnames, data=array)
 
+made = open("Plot/Results/" + targetString + "_made_all.txt", "w+")
+no = open("Plot/Results/" + targetString + "_not_all.txt", "w+")
 for index, row in frame.iterrows():
-	print(index)
+	# print(index)
 	height = getattr(row, 'Height')
 	pts = getattr(row,'PTS')
 	fga = getattr(row,'FGA')
@@ -153,14 +165,19 @@ for index, row in frame.iterrows():
 	player = player.loc[player['PTS'] == pts]
 	player = player.loc[player['FGA'] == fga]
 	player = player.loc[player['PProd'] == pprod]
-	print(player['Player'].values + ": " + str(probs[index]) + " Year: " + player['Year'].values + " Predicted: " + str(prediction[index]) + " Actual: " + str(actuals[index]))
-
+	if(player['SecondRound'].values[0]==0):
+		no.write(str(player['Player'].values) + ": " + str(probs[index]) + " Year: " + str(player['Year'].values) + " Predicted: " +
+				 str(prediction[index]) + " Actual: " + str(actuals[index]) + "\n")
+	else:
+		made.write(str(player['Player'].values) + ": " + str(probs[index]) + " Year: " + str(
+			player['Year'].values) + " Predicted: " + str(prediction[index]) + " Actual: " + str(actuals[index]) + "\n")
 
 allprobs = pd.DataFrame(logreg_proba)
 allprobs.columns = ["MissedPercent", "MadePercent"]
 allprobs["actual"] = y_test
 allprobs["predicted"] = logreg_predictions
-# allprobs.to_excel("tester.xlsx")
+allprobs.to_excel("Plot/Results/" + targetString + "_all.xlsx")
 
-print(player['Player'].values + ": " + str(probs[index]) + " Pos: " + player['Pos'].values +  " Height: " + str(player['Height'].values) + " School: " + player['Team'].values + " Year: " + player['Year'].values + " Predicted: " + str(prediction[index]) + " Actual: " + str(actuals[index]))
+
+# print(player['Player'].values + ": " + str(probs[index]) + " Pos: " + player['Pos'].values +  " Height: " + str(player['Height'].values) + " School: " + player['Team'].values + " Year: " + player['Year'].values + " Predicted: " + str(prediction[index]) + " Actual: " + str(actuals[index]))
 
