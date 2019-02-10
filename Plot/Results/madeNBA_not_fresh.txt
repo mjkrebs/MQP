@@ -1,0 +1,4 @@
+['Malcolm Miller']: [0.49316529 0.50683471] Year: ['2013-14'] Predicted: 1 Actual: 0
+['Melo Trimble']: [0.41947747 0.58052253] Year: ['2014-15'] Predicted: 1 Actual: 0
+['Willie Cauley-Stein']: [0.18623098 0.81376902] Year: ['2012-13'] Predicted: 1 Actual: 0
+['Aaron Harrison']: [0.20319314 0.79680686] Year: ['2013-14'] Predicted: 1 Actual: 0

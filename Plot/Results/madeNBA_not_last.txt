@@ -1,0 +1,16 @@
+['TaShawn Thomas']: [0.46492152 0.53507848] Year: ['2013-14'] Predicted: 1 Actual: 0
+['Robert Gray Jr.']: [0.44715733 0.55284267] Year: ['2017-18'] Predicted: 1 Actual: 0
+['Taurean Prince']: [0.35063304 0.64936696] Year: ['2014-15'] Predicted: 1 Actual: 0
+['Dean Wade']: [0.33350458 0.66649542] Year: ['2017-18'] Predicted: 1 Actual: 0
+['Ethan Happ']: [0.39007004 0.60992996] Year: ['2016-17'] Predicted: 1 Actual: 0
+['Juwan Morgan']: [0.39896063 0.60103937] Year: ['2017-18'] Predicted: 1 Actual: 0
+['Georges Niang']: [0.48245425 0.51754575] Year: ['2014-15'] Predicted: 1 Actual: 0
+['Willie Cauley-Stein']: [0.22943544 0.77056456] Year: ['2012-13'] Predicted: 1 Actual: 0
+['Jameel Warney']: [0.42701295 0.57298705] Year: ['2014-15'] Predicted: 1 Actual: 0
+['Luke Kornet']: [0.23533381 0.76466619] Year: ['2016-17'] Predicted: 1 Actual: 0
+['Tyrone Wallace']: [0.37858235 0.62141765] Year: ['2014-15'] Predicted: 1 Actual: 0
+['Andrew White III']: [0.32390466 0.67609534] Year: ['2016-17'] Predicted: 1 Actual: 0
+['Sim Bhullar']: [0.4990187 0.5009813] Year: ['2012-13'] Predicted: 1 Actual: 0
+['Amile Jefferson']: [0.29239903 0.70760097] Year: ['2016-17'] Predicted: 1 Actual: 0
+['Johnathan Motley']: [0.27670975 0.72329025] Year: ['2016-17'] Predicted: 1 Actual: 0
+['Justin Jackson']: [0.33059662 0.66940338] Year: ['2016-17'] Predicted: 1 Actual: 0

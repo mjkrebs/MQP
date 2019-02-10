@@ -1,0 +1,2 @@
+['Marcus Smart']: [0.15427119 0.84572881] Year: ['2012-13'] Predicted: 1 Actual: 0
+['Dakari Johnson']: [0.35476511 0.64523489] Year: ['2014-15'] Predicted: 1 Actual: 0

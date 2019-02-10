@@ -1,0 +1,5 @@
+['Willie Cauley-Stein']: [0.42600044 0.57399956] Year: ['2012-13'] Predicted: 1 Actual: 0
+['Cody Zeller']: [0.0193796 0.9806204] Year: ['2011-12'] Predicted: 1 Actual: 0
+['Thomas Bryant']: [0.43774318 0.56225682] Year: ['2015-16'] Predicted: 1 Actual: 0
+['Aaron Harrison']: [0.32721749 0.67278251] Year: ['2013-14'] Predicted: 1 Actual: 0
+['Jordan Adams']: [0.13405038 0.86594962] Year: ['2012-13'] Predicted: 1 Actual: 0

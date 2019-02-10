@@ -1,0 +1,4 @@
+["D'Angelo Russell"]: [0.6635664 0.3364336] Year: ['2014-15'] Predicted: 0 Actual: 1
+['Aaron Gordon']: [0.72831586 0.27168414] Year: ['2013-14'] Predicted: 0 Actual: 1
+['Lauri Markkanen']: [0.61568624 0.38431376] Year: ['2016-17'] Predicted: 0 Actual: 1
+['Ben Simmons']: [0.9800055 0.0199945] Year: ['2015-16'] Predicted: 0 Actual: 1

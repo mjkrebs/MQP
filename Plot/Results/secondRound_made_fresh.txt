@@ -1,0 +1,3 @@
+['Cheick Diallo']: [0.99880068 0.00119932] Year: ['2015-16'] Predicted: 0 Actual: 1
+['Jordan Bell']: [0.99804457 0.00195543] Year: ['2016-17'] Predicted: 0 Actual: 1
+['Hamidou Diallo']: [0.99206429 0.00793571] Year: ['2017-18'] Predicted: 0 Actual: 1

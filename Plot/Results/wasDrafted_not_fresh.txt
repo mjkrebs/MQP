@@ -1,0 +1,4 @@
+['Jarrett Culver']: [0.48122301 0.51877699] Year: ['2017-18'] Predicted: 1 Actual: 0
+['Aaron Harrison']: [0.17071291 0.82928709] Year: ['2013-14'] Predicted: 1 Actual: 0
+['Luke Kennard']: [0.36631259 0.63368741] Year: ['2015-16'] Predicted: 1 Actual: 0
+['Trevon Duval']: [0.47872133 0.52127867] Year: ['2017-18'] Predicted: 1 Actual: 0

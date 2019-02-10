@@ -1,0 +1,8 @@
+['Jaylen Brown']: [0.9959237 0.0040763] Year: ['2015-16'] Predicted: 0 Actual: 1
+['Zach Collins']: [0.95006703 0.04993297] Year: ['2016-17'] Predicted: 0 Actual: 1
+['Collin Sexton']: [0.96814224 0.03185776] Year: ['2017-18'] Predicted: 0 Actual: 1
+['Troy Brown']: [0.99776788 0.00223212] Year: ['2017-18'] Predicted: 0 Actual: 1
+['Harry Giles']: [0.98594838 0.01405162] Year: ['2016-17'] Predicted: 0 Actual: 1
+['Dennis Smith Jr.']: [0.9373665 0.0626335] Year: ['2016-17'] Predicted: 0 Actual: 1
+['Austin Rivers']: [0.73913087 0.26086913] Year: ['2011-12'] Predicted: 0 Actual: 1
+['Omari Spellman']: [0.9238151 0.0761849] Year: ['2017-18'] Predicted: 0 Actual: 1

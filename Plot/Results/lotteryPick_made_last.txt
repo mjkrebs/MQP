@@ -1,0 +1,9 @@
+['Jonathan Isaac']: [0.99028738 0.00971262] Year: ['2016-17'] Predicted: 0 Actual: 1
+['Mikal Bridges']: [0.97524841 0.02475159] Year: ['2017-18'] Predicted: 0 Actual: 1
+['Dennis Smith Jr.']: [0.9793611 0.0206389] Year: ['2016-17'] Predicted: 0 Actual: 1
+['T.J. Warren']: [0.87274011 0.12725989] Year: ['2013-14'] Predicted: 0 Actual: 1
+['Shabazz Muhammad']: [0.96977099 0.03022901] Year: ['2012-13'] Predicted: 0 Actual: 1
+['Stanley Johnson']: [0.52314439 0.47685561] Year: ['2014-15'] Predicted: 0 Actual: 1
+["D'Angelo Russell"]: [0.52104083 0.47895917] Year: ['2014-15'] Predicted: 0 Actual: 1
+['Kevin Knox']: [0.68131457 0.31868543] Year: ['2017-18'] Predicted: 0 Actual: 1
+['Bradley Beal']: [0.98878121 0.01121879] Year: ['2011-12'] Predicted: 0 Actual: 1

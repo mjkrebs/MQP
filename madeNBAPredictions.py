@@ -17,7 +17,7 @@ df = pd.read_excel("NCAA/NCAA_Freshmen_2012_Forward.xlsx")
 
 #this little code snippet removes all seasons for players that aren't their last. It makes sense that we're trying to predict whether or not
 #a 'season' will make the NBA and the player going back for another year of school adds unnecessary noise into the data. 
-"""
+
 i = 0
 print (len(df.index))
 for row in df.itertuples(name='Pandas',index=True):
@@ -31,7 +31,7 @@ for row in df.itertuples(name='Pandas',index=True):
 	if(rowname == nextrowname):
 		df = df.drop(rowindex,axis='index')
 print(len(df.index))		
-"""
+
 
 
 
@@ -153,8 +153,8 @@ actuals = y_test[y_test != logreg_predictions]
 array = X_test_normal[y_test != logreg_predictions]
 frame = pd.DataFrame(columns = colnames, data=array)
 
-made = open("Plot/Results/" + targetString + "_made_all.txt", "w+")
-no = open("Plot/Results/" + targetString + "_not_all.txt", "w+")
+made = open("Plot/Results/" + targetString + "_made_last.txt", "w+")
+no = open("Plot/Results/" + targetString + "_not_last.txt", "w+")
 for index, row in frame.iterrows():
 	# print(index)
 	height = getattr(row, 'Height')
@@ -176,7 +176,7 @@ allprobs = pd.DataFrame(logreg_proba)
 allprobs.columns = ["MissedPercent", "MadePercent"]
 allprobs["actual"] = y_test
 allprobs["predicted"] = logreg_predictions
-allprobs.to_excel("Plot/Results/" + targetString + "_all.xlsx")
+allprobs.to_excel("Plot/Results/" + targetString + "_last.xlsx")
 
 
 # print(player['Player'].values + ": " + str(probs[index]) + " Pos: " + player['Pos'].values +  " Height: " + str(player['Height'].values) + " School: " + player['Team'].values + " Year: " + player['Year'].values + " Predicted: " + str(prediction[index]) + " Actual: " + str(actuals[index]))

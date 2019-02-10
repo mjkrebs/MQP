@@ -1,0 +1,8 @@
+['Jordan Adams']: [0.3038424 0.6961576] Year: ['2012-13'] Predicted: 1 Actual: 0
+['Caris LeVert']: [0.45357377 0.54642623] Year: ['2014-15'] Predicted: 1 Actual: 0
+['Christian Wood']: [0.1773967 0.8226033] Year: ['2014-15'] Predicted: 1 Actual: 0
+['Oshae Brissett']: [0.38773512 0.61226488] Year: ['2017-18'] Predicted: 1 Actual: 0
+['Marcus Smart']: [0.2529304 0.7470696] Year: ['2012-13'] Predicted: 1 Actual: 0
+['Aaron Harrison']: [0.33124202 0.66875798] Year: ['2013-14'] Predicted: 1 Actual: 0
+['Johnathan Motley']: [0.24765275 0.75234725] Year: ['2016-17'] Predicted: 1 Actual: 0
+['Shamorie Ponds']: [0.38069189 0.61930811] Year: ['2017-18'] Predicted: 1 Actual: 0

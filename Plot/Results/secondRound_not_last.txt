@@ -1,0 +1,25 @@
+['Bonzie Colson']: [0.46277745 0.53722255] Year: ['2017-18'] Predicted: 1 Actual: 0
+['A.J. Martinka' 'A.J. Metz' 'Addison Owen' 'Aidan Hadley' 'Alec Raven'
+ 'Alex Foree' 'Chad Holtz' 'Charlie Hall' 'Chris Brickhouse'
+ 'Chris Brickhouse' 'Christian Harrison' 'Christian Harrison'
+ 'Colen Gaynor' 'Colin Edwards' 'Colin Kelly' 'Collin Sanger'
+ 'Colton Ponder' 'Dan Sheets' 'Dan Sheets' 'Danilo Dragovic'
+ 'Dave Jackson' 'David Cooper' 'Devin Waddell' 'Devocio Butler'
+ 'Dominique Miller' 'Evan Beucler' 'Fred John Jr.' 'Fred Landers'
+ 'Grant Hazle' 'Jack Parsley' 'James Griffin' 'Jefkins Agyeman-Budu'
+ 'John Gardner' 'Jon Brown' 'Jon Siu' 'Josh Olabosipo' 'Justin Simon'
+ 'Keeston Smith' 'Mairega Clarke' 'Mark Crowe' 'Matt Weyand'
+ 'Matthew Mache' 'Nate Duda' 'Nick Foschia' 'Omari Bennett' 'Rex Sunahara'
+ 'Rodney Hunter' 'Thomas Brandsma' 'Tyler Walston' 'Tyrell Taylor'
+ 'Wesley Alcegaire' 'Will Norman' 'Zach Snyder']: [0.14272494 0.85727506] Year: ['2017-18' '2013-14' '2017-18' '2013-14' '2015-16' '2016-17' '2015-16'
+ '2015-16' '2015-16' '2013-14' '2017-18' '2015-16' '2016-17' '2014-15'
+ '2011-12' '2013-14' '2013-14' '2016-17' '2015-16' '2011-12' '2012-13'
+ '2015-16' '2013-14' '2017-18' '2014-15' '2016-17' '2016-17' '2012-13'
+ '2017-18' '2016-17' '2015-16' '2015-16' '2017-18' '2017-18' '2015-16'
+ '2014-15' '2016-17' '2017-18' '2016-17' '2016-17' '2017-18' '2014-15'
+ '2017-18' '2013-14' '2012-13' '2015-16' '2015-16' '2015-16' '2013-14'
+ '2016-17' '2012-13' '2011-12' '2015-16'] Predicted: 1 Actual: 0
+['Trae Young']: [0.32168295 0.67831705] Year: ['2017-18'] Predicted: 1 Actual: 0
+['Christian Wood']: [0.44500312 0.55499688] Year: ['2014-15'] Predicted: 1 Actual: 0
+['Ben Simmons']: [0.43997198 0.56002802] Year: ['2015-16'] Predicted: 1 Actual: 0
+['Buddy Hield']: [0.35389599 0.64610401] Year: ['2015-16'] Predicted: 1 Actual: 0

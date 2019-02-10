@@ -1,0 +1,9 @@
+['Justin Patton']: [0.90290783 0.09709217] Year: ['2016-17'] Predicted: 0 Actual: 1
+['Grant Jerrett']: [0.94651428 0.05348572] Year: ['2012-13'] Predicted: 0 Actual: 1
+['Henry Ellenson']: [0.84105093 0.15894907] Year: ['2015-16'] Predicted: 0 Actual: 1
+['Tyler Ennis']: [0.87169017 0.12830983] Year: ['2013-14'] Predicted: 0 Actual: 1
+['Deyonta Davis']: [0.95567149 0.04432851] Year: ['2015-16'] Predicted: 0 Actual: 1
+['Marquis Teague']: [0.7674156 0.2325844] Year: ['2011-12'] Predicted: 0 Actual: 1
+['Omari Spellman']: [0.91321847 0.08678153] Year: ['2017-18'] Predicted: 0 Actual: 1
+['Chris McCullough']: [0.89010886 0.10989114] Year: ['2014-15'] Predicted: 0 Actual: 1
+['Collin Sexton']: [0.961254 0.038746] Year: ['2017-18'] Predicted: 0 Actual: 1

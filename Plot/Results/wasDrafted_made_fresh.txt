@@ -1,0 +1,12 @@
+['Chris McCullough']: [0.77301684 0.22698316] Year: ['2014-15'] Predicted: 0 Actual: 1
+['Jaren Jackson Jr.']: [0.93392572 0.06607428] Year: ['2017-18'] Predicted: 0 Actual: 1
+['Justin Jackson']: [0.94377568 0.05622432] Year: ['2016-17'] Predicted: 0 Actual: 1
+['Jarrett Allen']: [0.80480064 0.19519936] Year: ['2016-17'] Predicted: 0 Actual: 1
+['Arnett Moultrie']: [0.97650553 0.02349447] Year: ['2011-12'] Predicted: 0 Actual: 1
+['Lonnie Walker']: [0.99810652 0.00189348] Year: ['2017-18'] Predicted: 0 Actual: 1
+['Malik Beasley']: [0.73881577 0.26118423] Year: ['2015-16'] Predicted: 0 Actual: 1
+['Zach LaVine']: [0.92471831 0.07528169] Year: ['2013-14'] Predicted: 0 Actual: 1
+['Deyonta Davis']: [0.99797864 0.00202136] Year: ['2015-16'] Predicted: 0 Actual: 1
+['Troy Brown']: [0.99749669 0.00250331] Year: ['2017-18'] Predicted: 0 Actual: 1
+['Royce White']: [0.97816843 0.02183157] Year: ['2011-12'] Predicted: 0 Actual: 1
+['Donovan Mitchell']: [9.99881591e-01 1.18408527e-04] Year: ['2016-17'] Predicted: 0 Actual: 1
