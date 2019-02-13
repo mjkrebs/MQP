@@ -57,14 +57,12 @@ ids = df.pop('ID').values
 
 
 colnames = df.columns.values
-#Need to normalize the data!!!
 
 result = df
 
 # ---HERE, CHOOSE WHAT YOU WANT TO PREDICT ---
 # ---OPTIONS ARE: madeNBA, wasDrafted, firstRound, secondRound, lotteryPick
-# ---draftPosition will need a regression & not classification!!!---
-target = secondRound
+target = madeNBA
 targetString = ""
 
 if np.array_equal(target,madeNBA):
@@ -94,7 +92,7 @@ logreg = LogisticRegression().fit(X_train, y_train)
 logreg_predictions = logreg.predict(X_test)
 logreg_proba = logreg.predict_proba(X_test)
 
-'''
+
 dtree = DecisionTreeClassifier().fit(X_train,y_train)
 dtree_predictions = dtree.predict(X_test)
 
@@ -105,43 +103,29 @@ rfor_predictions = rfor.predict(X_test)
 cnn = MLPClassifier(learning_rate='adaptive',batch_size=400,activation='relu',hidden_layer_sizes =[1000,800,600,400,200,100,80,60,40,20,2],max_iter=1000)
 cnn.fit(X_train,y_train)
 cnn_predictions = cnn.predict(X_test)
-'''
+
 
 print("Metrics for: " + targetString)
 print("Logistic Regression")
-if np.array_equal(target,madeNBA):
-	print(classification_report(y_test, logreg_predictions, target_names=['No NBA', 'Made NBA']))
-elif np.array_equal(target,wasDrafted):
-	print(classification_report(y_test, logreg_predictions, target_names=['Not Drafted', 'Drafted']))
-elif np.array_equal(target,firstRound):
-	print(classification_report(y_test, logreg_predictions, target_names=['Not First Round', 'First Round']))
-elif np.array_equal(target,secondRound):
-	print(classification_report(y_test, logreg_predictions, target_names=['Not Second Round', 'Second Round']))
-elif np.array_equal(target,lotteryPick):
-	print(classification_report(y_test, logreg_predictions, target_names=['Not Lottery', 'Lottery']))
-
+print(classification_report(y_test, logreg_predictions, target_names =['No NBA', 'Made NBA']))
+print("Decision Tree")
+print(classification_report(y_test, dtree_predictions, target_names =['No NBA', 'Made NBA']))
+print("Random Forest")
+print(classification_report(y_test, rfor_predictions, target_names =['No NBA', 'Made NBA']))
+print("Multilayer Perceptron")
+print(classification_report(y_test, cnn_predictions, target_names =['No NBA', 'Made NBA']))
 
 #code to display coefficients
-
+"""
 coefs = logreg.coef_[0]
 indices = np.argsort(coefs)
 coefs.sort()
 
 
-# for i in range(0,len(indices)):
-	# print(colnames[indices[i]])
-	# print(coefs[i])
-
-
-
-
-
-# print("Decision Tree")
-# print(classification_report(y_test, dtree_predictions, target_names =['No NBA', 'Made NBA']))
-# print("Random Forest")
-# print(classification_report(y_test, rfor_predictions, target_names =['No NBA', 'Made NBA']))
-# print("Multilayer Perceptron")
-# print(classification_report(y_test, cnn_predictions, target_names =['No NBA', 'Made NBA']))
+for i in range(0,len(indices)):
+	print(colnames[indices[i]])
+	print(coefs[i])
+"""
 
 
 #for each misclassified row, find the corresponding name in the master dataframe
