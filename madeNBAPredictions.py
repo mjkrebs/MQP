@@ -11,29 +11,29 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn import preprocessing
 
-
-df = pd.read_excel("NCAA/NCAA_Freshmen_2012_Forward.xlsx")
-
+# df = pd.read_excel("NCAA/NCAA_Freshmen_2012_Forward.xlsx")
+df = pd.read_excel("lastYearOnly.xlsx")
+df.reset_index()
 
 #this little code snippet removes all seasons for players that aren't their last. It makes sense that we're trying to predict whether or not
-#a 'season' will make the NBA and the player going back for another year of school adds unnecessary noise into the data. 
+#a 'season' will make the NBA and the player going back for another year of school adds unnecessary noise into the data.
 
-i = 0
-print (len(df.index))
+'''
+lastGrade = 0
+lastrow = None
+lastarr = []
+
 for row in df.itertuples(name='Pandas',index=True):
-	if(i+1 == len(df.index)):
-		break
-	nextrow = df.iloc[i+1]
-	rowname = getattr(row,'Player')
-	nextrowname = getattr(nextrow,'Player')
-	rowindex = row[0]
-	i += 1
-	if(rowname == nextrowname):
-		df = df.drop(rowindex,axis='index')
-print(len(df.index))		
-
-
-
+	currGrade = getattr(row, 'Grade')
+	if(lastGrade >= currGrade):
+			lastarr.append(lastrow)
+	lastGrade = currGrade
+	lastrow = row
+lastarr.append(lastrow)
+lastdf = pd.DataFrame(lastarr)
+lastdf.to_excel("lastYearOnly.xlsx")
+exit(1)
+'''
 
 #FRESHMEN ONLY
 # df = df.loc[df['Grade'] == 1]
@@ -53,7 +53,7 @@ firstRound = df.pop('FirstRound').values
 secondRound = df.pop('SecondRound').values
 lotteryPick = df.pop('Lottery').values
 playerNames = df.pop('Player').values
-ids = df.pop('ID').values
+# ids = df.pop('ID').values
 
 
 colnames = df.columns.values
@@ -143,10 +143,6 @@ coefs.sort()
 # print("Multilayer Perceptron")
 # print(classification_report(y_test, cnn_predictions, target_names =['No NBA', 'Made NBA']))
 
-
-#for each misclassified row, find the corresponding name in the master dataframe
-#print(misclassified_samples)
-#for row in misclassified_samples:
 probs = logreg_proba[y_test != logreg_predictions]
 prediction = logreg_predictions[y_test != logreg_predictions]
 actuals = y_test[y_test != logreg_predictions]
@@ -155,6 +151,18 @@ frame = pd.DataFrame(columns = colnames, data=array)
 
 made = open("Plot/Results/" + targetString + "_made_last.txt", "w+")
 no = open("Plot/Results/" + targetString + "_not_last.txt", "w+")
+columnName = ""
+
+if np.array_equal(target,madeNBA):
+	columnName = "NBA"
+elif np.array_equal(target,wasDrafted):
+	columnName = "Drafted"
+elif np.array_equal(target,firstRound):
+	columnName = "FirstRound"
+elif np.array_equal(target,secondRound):
+	columnName = "SecondRound"
+elif np.array_equal(target,lotteryPick):
+	columnName = "Lottery"
 for index, row in frame.iterrows():
 	# print(index)
 	height = getattr(row, 'Height')
@@ -165,7 +173,7 @@ for index, row in frame.iterrows():
 	player = player.loc[player['PTS'] == pts]
 	player = player.loc[player['FGA'] == fga]
 	player = player.loc[player['PProd'] == pprod]
-	if(player['SecondRound'].values[0]==0):
+	if(player[columnName].values[0]==0):
 		no.write(str(player['Player'].values) + ": " + str(probs[index]) + " Year: " + str(player['Year'].values) + " Predicted: " +
 				 str(prediction[index]) + " Actual: " + str(actuals[index]) + "\n")
 	else:

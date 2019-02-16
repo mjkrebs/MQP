@@ -1,2 +1,4 @@
-['Marcus Smart']: [0.15427119 0.84572881] Year: ['2012-13'] Predicted: 1 Actual: 0
-['Dakari Johnson']: [0.35476511 0.64523489] Year: ['2014-15'] Predicted: 1 Actual: 0
+['Ivan Rabb']: [0.43659345 0.56340655] Year: ['2016-17'] Predicted: 1 Actual: 0
+['L.J. Thorpe']: [0.22835532 0.77164468] Year: ['2017-18'] Predicted: 1 Actual: 0
+['Jordan Adams']: [0.37236967 0.62763033] Year: ['2013-14'] Predicted: 1 Actual: 0
+['Delon Wright']: [0.09672258 0.90327742] Year: ['2014-15'] Predicted: 1 Actual: 0

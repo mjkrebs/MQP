@@ -1,9 +1,8 @@
-['Jonathan Isaac']: [0.99028738 0.00971262] Year: ['2016-17'] Predicted: 0 Actual: 1
-['Mikal Bridges']: [0.97524841 0.02475159] Year: ['2017-18'] Predicted: 0 Actual: 1
-['Dennis Smith Jr.']: [0.9793611 0.0206389] Year: ['2016-17'] Predicted: 0 Actual: 1
-['T.J. Warren']: [0.87274011 0.12725989] Year: ['2013-14'] Predicted: 0 Actual: 1
-['Shabazz Muhammad']: [0.96977099 0.03022901] Year: ['2012-13'] Predicted: 0 Actual: 1
-['Stanley Johnson']: [0.52314439 0.47685561] Year: ['2014-15'] Predicted: 0 Actual: 1
-["D'Angelo Russell"]: [0.52104083 0.47895917] Year: ['2014-15'] Predicted: 0 Actual: 1
-['Kevin Knox']: [0.68131457 0.31868543] Year: ['2017-18'] Predicted: 0 Actual: 1
-['Bradley Beal']: [0.98878121 0.01121879] Year: ['2011-12'] Predicted: 0 Actual: 1
+['Elfrid Payton']: [0.96728873 0.03271127] Year: ['2013-14'] Predicted: 0 Actual: 1
+['Mikal Bridges']: [0.96215982 0.03784018] Year: ['2017-18'] Predicted: 0 Actual: 1
+['Mohamed Bamba']: [0.73806031 0.26193969] Year: ['2017-18'] Predicted: 0 Actual: 1
+['Andre Drummond']: [0.98672164 0.01327836] Year: ['2011-12'] Predicted: 0 Actual: 1
+['Myles Turner']: [0.83176075 0.16823925] Year: ['2014-15'] Predicted: 0 Actual: 1
+['Alex Len']: [0.99260617 0.00739383] Year: ['2012-13'] Predicted: 0 Actual: 1
+['Anthony Bennett']: [0.97576694 0.02423306] Year: ['2012-13'] Predicted: 0 Actual: 1
+['Taurean Prince']: [9.99526113e-01 4.73887383e-04] Year: ['2015-16'] Predicted: 0 Actual: 1
