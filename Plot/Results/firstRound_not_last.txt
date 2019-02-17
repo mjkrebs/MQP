@@ -1,9 +1,5 @@
-['Aaron Harrison']: [0.41510928 0.58489072] Year: ['2013-14'] Predicted: 1 Actual: 0
-['Willie Cauley-Stein']: [0.20694421 0.79305579] Year: ['2012-13'] Predicted: 1 Actual: 0
-['Cody Zeller']: [0.06130771 0.93869229] Year: ['2011-12'] Predicted: 1 Actual: 0
-['Oshae Brissett']: [0.47386938 0.52613062] Year: ['2017-18'] Predicted: 1 Actual: 0
-['Daniel Hamilton']: [0.46116529 0.53883471] Year: ['2015-16'] Predicted: 1 Actual: 0
-['Willie Cauley-Stein']: [0.29992962 0.70007038] Year: ['2013-14'] Predicted: 1 Actual: 0
-['Bruce Brown']: [0.46115697 0.53884303] Year: ['2016-17'] Predicted: 1 Actual: 0
-['Kyle Anderson']: [0.12592409 0.87407591] Year: ['2012-13'] Predicted: 1 Actual: 0
-['Grayson Allen']: [0.07187943 0.92812057] Year: ['2015-16'] Predicted: 1 Actual: 0
+['Romero Osby']: [0.427192 0.572808] Year: ['2012-13'] Predicted: 1 Actual: 0
+['Cleanthony Early']: [0.23103693 0.76896307] Year: ['2013-14'] Predicted: 1 Actual: 0
+['Gary Trent Jr.']: [0.08525567 0.91474433] Year: ['2017-18'] Predicted: 1 Actual: 0
+['Davon Usher']: [0.07159631 0.92840369] Year: ['2013-14'] Predicted: 1 Actual: 0
+['Kenny Kadji']: [0.21055755 0.78944245] Year: ['2012-13'] Predicted: 1 Actual: 0

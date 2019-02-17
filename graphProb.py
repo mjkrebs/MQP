@@ -46,9 +46,9 @@ def makeMadeGraph(fname, title, xlabel, cutoff):
 # makeMadeGraph("lotteryPick_fresh.xlsx", "NCAA DI Freshmen Probability of being a Lottery Pick", "Chance of being a Lottery Pick", .01)
 
 
-# makeMadeGraph("madeNBA_last.xlsx", "NCAA DI Player's Last Year Probability of Making the NBA", "Chance of Making the NBA", .01)
-# makeMadeGraph("wasDrafted_last.xlsx", "NCAA DI Player's Last Year Probability of being Drafted", "Chance of being drafted", .01)
-# makeMadeGraph("firstRound_last.xlsx", "NCAA DI Player's Last Year Probability of being Drafted in the First Round", "Chance of being drafted in First Round", .01)
+makeMadeGraph("madeNBA_last.xlsx", "NCAA DI Player's Last Year Probability of Making the NBA", "Chance of Making the NBA", .01)
+makeMadeGraph("wasDrafted_last.xlsx", "NCAA DI Player's Last Year Probability of being Drafted", "Chance of being drafted", .01)
+makeMadeGraph("firstRound_last.xlsx", "NCAA DI Player's Last Year Probability of being Drafted in the First Round", "Chance of being drafted in First Round", .01)
 # Need to make pallete size = 1 on line 20 because there was only true negatives... no lastmen outside of first round
-# makeMadeGraph("secondRound_last.xlsx", "NCAA DI Player's Last Year Probability of being Drafted in the Second Round", "Chance of being drafted in Second Round", .01)
-# makeMadeGraph("lotteryPick_last.xlsx", "NCAA DI Player's Last Year Probability of being a Lottery Pick", "Chance of being a Lottery Pick", .01)
+makeMadeGraph("secondRound_last.xlsx", "NCAA DI Player's Last Year Probability of being Drafted in the Second Round", "Chance of being drafted in Second Round", .01)
+makeMadeGraph("lotteryPick_last.xlsx", "NCAA DI Player's Last Year Probability of being a Lottery Pick", "Chance of being a Lottery Pick", .01)
