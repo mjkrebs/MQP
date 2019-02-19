@@ -1,0 +1,11 @@
+Average F1 Scores:
+LogReg: 0.42166666666666663
+Decision Tree: 0.31666666666666665
+Random Forest: 0.13499999999999998
+Multilayer Perceptron: 0.09999999999999999
+Max F1 Scores:
+
+LogReg: 0.47
+Decision Tree: 0.39
+Random Forest: 0.18
+Multilayer Perceptron: 0.1

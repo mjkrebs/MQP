@@ -1,5 +1,6 @@
 import re
 import numpy as np
+import pandas as pd
 # e.g. made, fresh
 
 def frequenciesOfPlayersByScope(type, scope):
@@ -42,9 +43,68 @@ def frequenciesOfPlayersByTarget(type, target):
     out.close()
 
 
+
+def resultsToTables(type, target):
+    cumulativeTxt = ""
+    for i in {"all", "fresh", "last"}:
+        f = open("Plot/Results/" + target + "_" + type + "_" + i + ".txt", "r")
+        for line in f:
+            line = line + "[" + i + "]"
+            print(line)
+            cumulativeTxt = cumulativeTxt + line
+        f.close()
+    # print(cumulativeTxt)
+    all = re.findall(r"\[\'(\w+ \w+|\w\.\w\. \w+|\w+ \w+-\w+|\w+ \w+ \w+)\'\]\: \[(0\.\d+) (0.\d+)\] Year: \[\'(\d+-\d+)\'\] \w+: (\d) \w+: (\d)\n\[(\w+)", cumulativeTxt)
+    names = []
+    probM = []
+    probN = []
+    year = []
+    pred = []
+    actual = []
+    scope = []
+    counter = 0
+    for player in all:
+        for row in player:
+            if(counter%7==0):
+                names.append(row)
+            elif (counter % 7 == 1):
+                probN.append(row)
+            elif (counter % 7 == 2):
+                probM.append(row)
+            elif (counter % 7 == 3):
+                year.append(row)
+            elif (counter % 7 == 4):
+                pred.append(row)
+            elif (counter % 7 == 5):
+                actual.append(row)
+            else:
+                scope.append(row)
+            counter +=1
+    typeDF = [str(type)]*len(actual)
+    targetDF = [str(target)]*len(actual)
+
+    df = pd.DataFrame({"Scope":scope, "Type":typeDF, "Target":targetDF, "Name": names, "Probability Made": probM, "Probability Not": probN, "Year": year, "Predicted":pred, "Actual":actual})
+    df.to_excel(type + "_" + target + ".xlsx")
+
+
+def combineTables():
+    masterdf = pd.DataFrame()
+    for type in {"made", "not"}:
+        for target in {"madeNBA", "wasDrafted", "lotteryPick", "firstRound", "secondRound"}:
+            if(len(masterdf)==0):
+                masterdf = pd.read_excel(type + "_" + target + ".xlsx")
+            else:
+                masterdf = masterdf.append(pd.read_excel(type + "_" + target + ".xlsx"))
+    masterdf.to_excel("all_misses.xlsx")
+
+
 for type in {"made", "not"}:
-    for scope in {"all", "fresh", "last"}:
-        frequenciesOfPlayersByScope(type, scope)
-    for target in {"madeNBA", "wasDrafted", "lotteryPick", "firstRound"}:
-        frequenciesOfPlayersByTarget(type, target)
+    # for scope in {"all", "fresh", "last"}:
+    #     frequenciesOfPlayersByScope(type, scope)
+    for target in {"madeNBA", "wasDrafted", "lotteryPick", "firstRound", "secondRound"}:
+        # frequenciesOfPlayersByTarget(type, target)
+        resultsToTables(type, target)
+
+combineTables()
+
 

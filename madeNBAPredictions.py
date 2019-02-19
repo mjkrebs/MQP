@@ -11,8 +11,8 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn import preprocessing
 
-# df = pd.read_excel("NCAA/NCAA_Freshmen_2012_Forward.xlsx")
-df = pd.read_excel("lastYearOnly.xlsx")
+df = pd.read_excel("NCAA/NCAA_Freshmen_2012_Forward.xlsx")
+# df = pd.read_excel("lastYearOnly.xlsx")
 df.reset_index()
 
 #this little code snippet removes all seasons for players that aren't their last. It makes sense that we're trying to predict whether or not
@@ -92,29 +92,42 @@ logreg = LogisticRegression().fit(X_train, y_train)
 logreg_predictions = logreg.predict(X_test)
 logreg_proba = logreg.predict_proba(X_test)
 
+# dtree = DecisionTreeClassifier().fit(X_train,y_train)
+# dtree_predictions = dtree.predict(X_test)
 
-dtree = DecisionTreeClassifier().fit(X_train,y_train)
-dtree_predictions = dtree.predict(X_test)
-
-rfor = RandomForestClassifier(n_estimators=100).fit(X_train,y_train)
-rfor_predictions = rfor.predict(X_test)
+# rfor = RandomForestClassifier(n_estimators=100).fit(X_train,y_train)
+# rfor_predictions = rfor.predict(X_test)
 
 
-cnn = MLPClassifier(learning_rate='adaptive',batch_size=400,activation='relu',hidden_layer_sizes =[1000,800,600,400,200,100,80,60,40,20,2],max_iter=1000)
-cnn.fit(X_train,y_train)
-cnn_predictions = cnn.predict(X_test)
+# cnn = MLPClassifier(learning_rate='adaptive',batch_size=400,activation='relu',hidden_layer_sizes =[1000,800,600,400,200,100,80,60,40,20,2],max_iter=1000)
+# cnn.fit(X_train,y_train)
+# cnn_predictions = cnn.predict(X_test)
 
 
 print("Metrics for: " + targetString)
 print("Logistic Regression")
 print(classification_report(y_test, logreg_predictions, target_names =['No NBA', 'Made NBA']))
-print("Decision Tree")
-print(classification_report(y_test, dtree_predictions, target_names =['No NBA', 'Made NBA']))
-print("Random Forest")
-print(classification_report(y_test, rfor_predictions, target_names =['No NBA', 'Made NBA']))
-print("Multilayer Perceptron")
-print(classification_report(y_test, cnn_predictions, target_names =['No NBA', 'Made NBA']))
+# print("Decision Tree")
+# print(classification_report(y_test, dtree_predictions, target_names =['No NBA', 'Made NBA']))
+# print("Random Forest")
+# print(classification_report(y_test, rfor_predictions, target_names =['No NBA', 'Made NBA']))
+# print("Multilayer Perceptron")
+# print(classification_report(y_test, cnn_predictions, target_names =['No NBA', 'Made NBA']))
 
+'''
+print("Metrics for: " + targetString)
+print("Logistic Regression")
+if np.array_equal(target,madeNBA):
+	print(classification_report(y_test, logreg_predictions, target_names=['No NBA', 'Made NBA']))
+elif np.array_equal(target,wasDrafted):
+	print(classification_report(y_test, logreg_predictions, target_names=['Not Drafted', 'Drafted']))
+elif np.array_equal(target,firstRound):
+	print(classification_report(y_test, logreg_predictions, target_names=['Not First Round', 'First Round']))
+elif np.array_equal(target,secondRound):
+	print(classification_report(y_test, logreg_predictions, target_names=['Not Second Round', 'Second Round']))
+elif np.array_equal(target,lotteryPick):
+	print(classification_report(y_test, logreg_predictions, target_names=['Not Lottery', 'Lottery']))
+'''
 #code to display coefficients
 """
 coefs = logreg.coef_[0]
@@ -127,6 +140,7 @@ for i in range(0,len(indices)):
 	print(coefs[i])
 """
 
+'''
 probs = logreg_proba[y_test != logreg_predictions]
 prediction = logreg_predictions[y_test != logreg_predictions]
 actuals = y_test[y_test != logreg_predictions]
@@ -172,4 +186,4 @@ allprobs.to_excel("Plot/Results/" + targetString + "_last.xlsx")
 
 
 # print(player['Player'].values + ": " + str(probs[index]) + " Pos: " + player['Pos'].values +  " Height: " + str(player['Height'].values) + " School: " + player['Team'].values + " Year: " + player['Year'].values + " Predicted: " + str(prediction[index]) + " Actual: " + str(actuals[index]))
-
+'''
